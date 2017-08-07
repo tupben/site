@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<meta name=viewport content="width=device-width, initial-scale=1" charset="utf-8">
+
+<head>
+<link rel="stylesheet" type="text/css" href="../proj_style.css">
+<title>The Game of Life</title>
+</head>
+<body>
+<div id="project"></div>
+<div id="container">
+	<a href = "../index.html" id="back">back</a>
+	<div class="box" id="details">
+The Game of Life is a simulation that creates beautiful life-like populations with very simple rules. Each node is either dead or alive and each turn it asks it self 2 questions:
+
+		Am I alive?
+			Yes: 	How many living neighbors do I have?
+														3: 	STAY ALIVE
+													not	3:	DIE
+			No:		How many living neighbors do I have?
+													2 or 3: 	COME ALIVE
+												not	2 or 3: 	STAY DEAD
+
+There are some wonderful natural patterns that pop up under these rules. Some groups are stable - they won't change unless 'bothered'. Can you can find the smallest stable group? Can you find the largest stable group? Can you make a group that oscilates between 2 or more states, but returns to its starting value?
+
+I implemented this using D3. An underlying array is holding the values for each node. The D3 data-join is creating and updating the elements as the data change.
+
+							Your math enthusiast,
+											Ben
+
+	</div>
+	<div class ="box" id="code">The Code:
+	<script src="https://gist.github.com/tupben/46fde8e8a14d3a75410b4f1baad2c118.js"></script>
+	</div>
+	<br>
+	<div style="align-self: left">(c) powered by sheer force of will
+	</div>
+</div>
+</body>
+
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script src='../script.js'></script>

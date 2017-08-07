@@ -1,0 +1,59 @@
+svg {
+	background-color: white;
+}
+
+line {
+	stroke-width: 1;
+	stroke: gray;
+	fill: none;
+}
+
+rect {
+	stroke-width:3;
+	stroke: white;
+	box-sizing: border-box;
+}
+
+text {
+	text-anchor: middle;
+	font: 40px sans-serif;
+}
+
+.toggle {
+	position: absolute;
+	bottom: 0%;
+	float:bottom;
+	width: 400px;
+	height: 80px;
+	cursor: pointer;
+	font-size: 34px;
+	background-color: transparent;
+	border: steelblue 2px solid;
+	margin: 30px 20px;
+}
+
+.toggle:hover {
+	background-color: lightsteelblue;
+}
+
+.container {
+	overflow: hidden;
+	margin: auto;
+	white-space:nowrap;
+}
+
+.title {
+	color: #333;
+	font-size: 50px;
+	text-align: center;
+	font-family: "Palatino", serif;
+}
+
+#playButton {
+	position: relative;
+	margin-top:400px;
+}
+
+#playButtonBox {
+	text-align: center;
+}

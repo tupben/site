@@ -1,0 +1,232 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>  
+
+<div id="bigBox">
+  <div id="graphBox"></div>
+  <div id="dataBox">
+    <div id="printBox"><div>TRANSFORMATIONS</div><br></div>
+    <div id="inputBox">
+        <form name="myform" action="#" onkeypress="handleClick(event)" autocomplete="off">
+            ENTER TRANSFORMATION<br><br>
+            <input type="text" id="textBox" placeholder=" i.e. -1,0,1,1" >
+            <br><br>
+            <div class="button" id="submit" onClick="handleClick(1)">Transform!</div>
+            <div class="button" id="clear"  onClick="handleClick(2)">Restart!</div>
+        </form>
+      </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.14.2/math.js" type="text/javascript"></script>
+<script src="https://d3js.org/d3.v3.min.js" type="text/javascript"></script>
+<script>
+
+// Creates an array of <svg> lines. Takes an argument x for a domain and range of [-x,x]
+grid = function(x) {
+  var newGrid  = [];
+  for (a of math.range(0,4*x+1)._data) {
+    var xline_1 = [[0,a],[4*x,a]];
+    var xline_2 = math.subtract(xline_1,2*x);
+    var xline_3 = math.divide(xline_2,2);
+    newGrid.push(xline_3)
+    var yline_1 = [[a,0],[a,4*x]];
+    var yline_2 = math.subtract(yline_1,2*x);
+    var yline_3 = math.divide(yline_2,2);
+    newGrid.push(yline_3)
+  }
+  return newGrid;
+}
+
+// D3 work. Rejoin data with these elements and update their attributes accordingly.
+function update() {
+  arrow
+      .data(vectorData)
+    .transition()
+      .duration(5000)
+      .attr("x2",function(d){return x(d[0])})
+      .attr("y2",function(d){return y(d[1])})
+  head
+      .data(vectorData)
+    .transition()
+      .duration(5000)
+      .attr("cx",function(d){return x(d[0])})
+      .attr("cy",function(d){return y(d[1])})
+  moveLines
+      .data(gridData)
+    .transition()
+      .duration(5000)
+      .attr("x1",function(d){return x(d[0][0]); })
+      .attr("y1",function(d){return y(d[0][1]); })
+      .attr("x2",function(d){return x(d[1][0]); })
+      .attr("y2",function(d){return y(d[1][1]); })
+}
+
+// Do the math. Takes an object of lines (grid) or points (vector) and applies a transformation to each of them
+function transform(data,tran) {
+  var val;
+  typeof eval(tran) === "object"
+    ? val = eval(tran)
+    : val = tran.split(",");
+  var a = val[0];
+  var b = val[1];
+  var c = val[2];
+  var d = val[3];
+  tran = [[a,c],[b,d]];  
+  if (math.size(data).length === 2){
+    d3.select("#printBox")
+      .append("div")
+      .attr("class","text")
+      .html(tran[0][0]+" "+tran[0][1]+"<br />"+ tran[1][0]+" " + tran[1][1])
+    var newData = data.map(function(x) {
+      return math.multiply(tran,x);
+    })
+  } 
+  else {
+    var newData = data.map(function(x) {
+      return x.map(function(y){
+        return math.multiply(tran,y);
+      })
+    })
+  }
+  return newData
+}
+
+// Handle click on either button or "return" key (13)
+function handleClick(e){
+  var textBox = document.getElementById("textBox");
+  var printBox = document.getElementById("printBox");
+  if(e.keyCode === 13) {
+    e.preventDefault();
+  }
+  if(e.keyCode === 13 || e === 1) {
+    var inputTransform = textBox.value;
+    vectorData = transform(vectorData,inputTransform);
+    gridData = transform(gridData,inputTransform);
+    update();
+    textBox.value = "";
+  }
+  if(e === 2){
+    textBox.value = "";
+    restart();
+  }
+  printBox.scrollTop = printBox.scrollHeight;
+  return false;
+}
+
+// Return screen to opening position
+function restart(){
+  vectorData = [[1,0],[0,1]]
+  gridData   = grid(ticks)
+  update();
+  d3.selectAll(".text").remove()
+}
+
+// Print the last transformation in the printBox
+print = function(a){
+    var printBoxes = d3.select("#printBox")
+      .append("div")
+      .attr("class","text")
+      .html(a[0][0]+" "+a[0][1]+"<br />"+ a[1][0]+" " + a[1][1])
+}
+
+// Variables.
+var height = width = 700,
+    margin = 4,
+    unit = 100,
+    ticks = math.floor(2*width/unit+1),
+    vectorData = [[1,0],[0,1]],
+    gridData   = grid(ticks);
+
+// Preset transformations.
+var rotateL   =       [0,1,-1,0],
+    rotateR   =       [0,-1,1,0],
+    flipX     =       [1,0,0,-1],
+    flipY     =       [-1,0,0,1],
+    shearR    =       [1,0,1,1],
+    shearL    =       [1,0,-1,1],
+    scaleU    =       [2,0,0,2],
+    scaleD    =       [.5,0,0,.5];
+
+// D3 scaling setup.
+var x = d3.scale.linear()
+  .domain([0,1])
+  .range([0,unit])
+
+var y = d3.scale.linear()
+  .domain([0,1])
+  .range([0,-unit])
+
+/////
+// Below: Binding the data to selections of DOM elements, then creating those elements.
+/////
+
+var svg = d3.select("#graphBox")
+  .append("svg")
+    .attr("width",width + margin*2)
+    .attr("height",height + margin*2)
+  .append("g")
+    .attr("transform","translate(" + eval(width/2 + margin) + "," + eval(height/2 + margin) + ")")
+
+var lines = svg.selectAll("line")
+    .data(gridData)
+  .enter()
+
+var stayLines = lines.append("line")
+    .style("stroke","#000065")
+    .attr("x1",function(d){return x(d[0][0])})
+    .attr("y1",function(d){return y(d[0][1])})
+    .attr("x2",function(d){return x(d[1][0])})
+    .attr("y2",function(d){return y(d[1][1])})
+
+var moveLines = lines.append("line")
+    .style("stroke",function(d,i){
+      return math.floor(i/2)%2===1?"":"#3030B2"
+    })
+    .attr("x1",function(d){return x(d[0][0])})
+    .attr("y1",function(d){return y(d[0][1])})
+    .attr("x2",function(d){return x(d[1][0])})
+    .attr("y2",function(d){return y(d[1][1])})
+
+var xAxis = svg
+  .append("line")
+    .attr("class","axis")
+    .attr("x1",-width)
+    .attr("y1",0)
+    .attr("x2",width)
+    .attr("y2",0)
+
+var yAxis = svg
+  .append("line")
+    .attr("class","axis")
+    .attr("x1",0)
+    .attr("y1",height)
+    .attr("x2",0)
+    .attr("y2",-height)
+
+var vector = svg.selectAll(".vector")
+    .data(vectorData)
+    .enter()
+
+var arrow = vector
+  .append("line")
+    .attr("class","vector")
+    .attr("x1",0)
+    .attr("y1",0)
+    .attr("x2",function(d){return x(d[0])})
+    .attr("y2",function(d){return y(d[1])})
+    .style("stroke",function(d,i){return i?"#74C476":"#D6616B"})
+
+var head = vector
+  .append("circle")
+    .attr("class","vector")
+    .attr("cx",function(d){return x(d[0])})
+    .attr("cy",function(d){return y(d[1])})
+    .attr("r",4)
+    .style("fill","yellow")
+
+</script>
+</body>
+</html>

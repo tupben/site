@@ -1,0 +1,22 @@
+{
+	"If Everybody Helps":
+	{	"name"			: "If Everybody Helps<br><small>Ben and Ross and Friends</small>",
+		"bpm"			: 336,
+		"delay"			: 5150,
+		"source"		: "10 If Everybody Helps.wav",
+		"verse"  		: [ 1,1,4,1,
+							1,1,4,5,
+							1,1,4,4,
+							5,5,1,1],
+		"turnaround"		: [ 5,5,1,1],
+		"structure": 	[ 	"verse",
+							"verse",
+							"verse",
+							"verse",
+							"turnaround",
+							"verse",
+							"turnaround"
+						]
+	}
+}
+

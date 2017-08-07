@@ -1,0 +1,68 @@
+#bigBox {
+	display: flex;
+	flex-direction: row;
+	font-size: 30px;
+	color: white;
+	font-family: courier;
+}
+
+#graphBox {
+	background-color: black;
+	flex:2;
+	height: 98%;
+	margin: 5px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#dataBox {
+	background-color: black;
+	flex:1;
+	margin: 5px;
+}
+
+#inputBox {
+	flex: 1;
+	border-top: 1px darkgray solid;
+	padding: 30px;
+}
+
+#printBox {
+	padding: 30px;
+    overflow-y: scroll;
+    height: 300px;
+}
+
+.text {
+	margin: 0 18px 18px 0;
+	padding:8px;
+	border: 1px solid steelblue;
+	display: inline-block;
+}
+
+.axis {
+	stroke: #E0E0FF;
+}
+
+.vector {
+	stroke-width: 4px;
+	stroke-linecap: round;
+}
+
+input {
+	font-size: 30px;
+	font-family: courier;
+}
+
+.button{
+	height:30px;
+	width: 370px;
+	margin-bottom:20px;
+	border: 1px white solid;
+	font-size: 24px;
+	text-align: center;
+	background-color: white;
+	color: black;
+	cursor: pointer;
+}

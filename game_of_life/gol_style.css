@@ -1,0 +1,47 @@
+body{
+  margin-left: 60px;
+  text-align: center;
+  color: black;
+  font-size: 24px;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.pixel {
+  margin: 1px;
+  cursor: pointer;
+  border: 1px solid RGB(230,230,230);
+}
+
+.pixel:hover {
+  border: solid 1px steelblue;
+}
+
+input {
+  height: 80px;
+  width: 400px;
+  font-size: 34px;
+  cursor: pointer;
+  background-color: transparent;
+  border: RGB(230,230,230) 2px solid;
+}
+
+input:hover {
+  border:  2px solid steelblue;
+}
+
+#sidebar {
+  right: 0%;
+  top:0%;
+  margin: 100px 240px;
+  position:absolute;
+  display: flex;
+  flex-direction:column;
+}
+
+.sideButton {
+  margin: 20px 0;
+}

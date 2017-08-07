@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Chord Visualizer</title>
+</head>
+<link rel="stylesheet" type="text/css" href="song_style.css">
+<body>
+
+<audio id="audioElement"></audio>
+
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script>
+var songChoice = "If Everybody Helps"
+
+d3.json("chordData.json", function(songs) {
+
+var margin = {top:20, right:20, bottom:20, left:20},
+    height = 480,
+    width = height * 2 / 3,
+    chart_width = width * 4,
+    rect_xy = height / 6 - 5;
+	// spacing = true
+	nameToggle = spacingToggle = muteToggle = true
+
+var playButton = d3.select("body")
+	.append("div")
+		.attr("id","playButtonBox")
+	.append("input")
+		.attr("id","playButton")
+		.attr("type","button")
+		.attr("class","toggle")
+		.attr("value","play")
+		.on("click",function(){
+			d3.select("playButtonBox").remove();
+			d3.select("#playButton").remove();
+			update(songChoice);
+		})
+
+function update(songChoice){
+	d3.select(".container")
+		.remove()
+	d3.select(".title")
+		.remove()
+
+	var spacingButton = d3.select("body").append("input")
+		.attr("id","spacing")
+		.attr("type","button")
+		.attr("class","toggle")
+		.attr("value","5ths")
+		.style("left","0%")
+		.on("click", function() {
+			spacingButton
+				.attr("value",function(){
+					return spacingToggle ? "scalar spacing" : "5ths"
+				})
+			d3.selectAll("rect")
+					.attr("y", function(d) {return spacingToggle ? z(d.chord) : y(d.chord)})
+			d3.selectAll("text")
+					.attr("y", function(d) {return spacingToggle ? z(d.chord) + rect_xy/2 : y(d.chord) + rect_xy/2})
+			spacingToggle = !spacingToggle
+	})
+
+	var chordButton = d3.select("body").append("input")
+		.attr("id","chord")
+		.attr("type","button")
+		.attr("class","toggle")
+		.attr("value","letters")
+		.style("right","0%")
+		.on("click", function() {
+			chordButton
+				.attr("value", function(){
+					return nameToggle ? "numbers" : "letters"
+				})
+			d3.selectAll("text")
+				.text(function(d) {return nameToggle ? l(d.chord) : d.chord; })
+			nameToggle = !nameToggle
+		})
+
+	var muteButton = d3.select("body").append("input")
+		.attr("id","mute")
+		.attr("type","button")
+		.attr("class","toggle")
+		.attr("value","mute")
+		.style("left","35%")
+		.on("click",function(){
+			muteButton
+				.attr("value", function(){
+					return muteToggle ? "unmute" : "mute"
+				});
+			var song = document.getElementById('audioElement')
+			song.muted = muteToggle;
+			muteToggle = !muteToggle;
+			console.log(muteToggle)
+		})
+
+	var data = prepare(songs[songChoice])
+
+	var interval = 16*60*1000 / data.bpm
+
+	var x = d3.scale.linear()
+		.domain([0,3+1])
+		.range([0,width])
+
+	var y = d3.scale.ordinal()
+		.domain([1,2,3,4,5,6])
+		.rangeBands([height,0])
+
+	var z = d3.scale.ordinal()
+		.domain([3,6,2,5,1,4])
+		.rangeBands([height,0])
+
+	var l = d3.scale.ordinal()
+		.domain([1,2,3,4,5,6])
+		.range(["C","Dm","Em","F","G","Am"])
+
+
+	var color = {	1:"#6baed6",
+					2:"#fd8d3c",
+					3:"#fdd0a2",
+					4:"#3182bd",
+					5:"#c6dbef",
+					6:"#e6550d"
+	}
+
+	var title = d3.select("body").append("div")
+	  .append("h1")
+		.attr("class","title")
+		.html(data.name)
+
+	var svg = d3.select("body").append("div")
+		.attr("class","container")
+	  .append("div")
+		.attr("class","inner")
+		.attr("background-color","lightgray")
+		.style("width", width * 4 + "px")
+		.attr("height", height + margin.top + margin.bottom)
+		.style("margin-left", width * 2 + "px")
+	  .append("g")
+
+	var panel = svg.selectAll(".panel")
+	    .data(data.chords)
+	  .enter().append("svg")
+	  	.attr("class","panel")
+	  	.attr("width",
+	  		function(d) {
+	  			return width * .25 * d3.sum(d, function(d){return d.duration;
+	  			})
+	  		})
+	  	.attr("height",height)
+	  	.attr("display","inline-block")
+	  	.attr("id", function(d,i) {return "panel" + i})
+	  	.attr("beats",function(d) {return d3.sum(d, function(d){return d.duration; }) })
+
+	var line = panel.append("line")
+			.attr("x1",0)
+			.attr("y1",0)
+			.attr("x2",0)
+			.attr("y2",height)
+
+	var chord = panel.selectAll("g")
+				.data(function(d) {return d})
+			.enter()
+
+	var rect = chord.append("rect")
+		.attr("width", function(d) {return rect_xy * d.duration; })
+		.attr("height", rect_xy)
+		.attr("rx",rect_xy/10)
+		.attr("ry",rect_xy/10)
+		.attr("x", function(d,i) {return x(d.beat_measure)})
+		.attr("y", function(d) {return spacingToggle ? y(d.chord) : z(d.chord); })
+		.attr("fill", function(d) {return color[d.chord]})
+		.attr("id", function(d) { return "chord" + d.beat_song	})
+
+
+	var text = chord.append("text")
+		.attr("x", function(d,i) {return x(d.beat_measure) + (rect_xy * d.duration)/2})
+		.attr("y", function(d) {return spacingToggle ? y(d.chord) + rect_xy/2 : z(d.chord) + rect_xy/2 })
+		.attr("dy","0.35em")
+		// .style("text-anchor","middle")
+		// .style("font","40px sans-serif")
+		.text(function(d) {return nameToggle ? d.chord : l(d.chord); })
+
+
+	function blink() {
+		let blinking = d3.selectAll("rect")
+			.transition()
+				.delay(function(d) {return interval * d.beat_song / 4 + data.delay})
+				.style("stroke", "yellow")
+				.style("stroke-width",7)
+			.transition()
+				.duration(function(d) {return interval * d.duration / 4})
+				.style("stroke","white")
+				.style("stroke-width",3);
+	}
+
+	var iter = 1;
+	setInterval(scroll,interval);
+
+	function scroll(){
+		svg.transition()
+				.delay(function() { return data.delay > 0 ? data.delay : 0 })
+		  	.ease("linear")
+				.style("margin-left", -width * iter + "px")
+				.duration(interval)
+		iter += 1
+	}
+
+	var song = document.getElementById('audioElement')
+	  song.src=data.source;
+	  song.play();
+	blink();
+	scroll();
+}
+
+function prepare(data){
+	let new_data = Object.assign({},data)
+	let new_chords = [];
+	let beat_song = 0;
+	new_data.chords=[];
+	for (a of new_data.structure) {
+		for (let i = 0; i < new_data[a].length; i += 4){
+			new_chords.push(new_data[a].slice(i,i+4));
+		};
+	};
+	for (a of new_chords) {
+		let new_panel = [];
+		let beat_measure = 0;
+		for (b of a) {
+			if (typeof(b) === "number"){
+				new_panel.push({  	chord:b,
+									duration:1,
+									beat_measure: beat_measure,
+									beat_song: beat_song
+												});
+				beat_measure += 1;
+				beat_song += 1;
+			} else if (typeof(b) === "object") {
+					for (c of b) {
+						new_panel.push({  	chord:c,
+											duration: 0.5,
+											beat_measure:beat_measure,
+											beat_song: beat_song
+															});
+						beat_measure += 0.5;
+						beat_song += 0.5;
+					};
+			};
+		};
+		new_data.chords.push(new_panel);
+	};
+	return new_data;
+
+};
+
+});
+
+</script>
+</body>
+</html>

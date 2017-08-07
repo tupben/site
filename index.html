@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<meta name=viewport content="width=device-width, initial-scale=1" charset="utf-8">
+<link rel="stylesheet" type="text/css" href="home_style.css">
+
+<head>
+<title>Ben Tupper - Projects and Ideas</title>
+</head>
+
+
+<script src="script.js" type="text/javascript"></script>
+<script src="https://d3js.org/d3.v3.min.js" type="text/javascript"></script>
+
+<body>
+	<div class = "container">
+	<div id="titleBar">
+		<div id="title">
+			<h1>Ben Tupper</h1>
+			<h2>projects and ideas</h2>
+		</div>
+	</div>
+	</div>
+</body>
+<script>
+
+var projectBox = d3.select(".container").append("div").attr("class","projectBox")
+
+new_project("Linear Algebra Grapher","linear_graph","white")
+new_project("Chord Visualizer","chord_vis")
+new_project("The Game of Hex","hex")
+new_project("The Game of Life","game_of_life")
+// new_project("The Multi-Armed Bandit Problem","multiarmed_bandit")
+
+
+
+function new_project(title,url,titleColor="black"){
+	projectBox
+		.append("a")
+			.attr("id",url)
+			.attr("class","project")
+			.attr("href", url+"/index.html")
+			.style("background-image","url("+url+"/thumb.png)")
+			.text(title)
+			.style("color", titleColor)
+}
+
+
+
+
+</script>
+
