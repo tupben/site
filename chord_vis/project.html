@@ -10,7 +10,7 @@
 
 <script src="https://d3js.org/d3.v3.min.js"></script>
 <script>
-var songChoice = "If Everybody Helps"
+var songChoice = "If Everybody Helps";
 
 d3.json("chordData.json", function(songs) {
 
@@ -18,9 +18,8 @@ var margin = {top:20, right:20, bottom:20, left:20},
     height = 480,
     width = height * 2 / 3,
     chart_width = width * 4,
-    rect_xy = height / 6 - 5;
-	// spacing = true
-	nameToggle = spacingToggle = muteToggle = true
+    rect_xy = height / 6 - 5,
+	nameToggle = spacingToggle = muteToggle = true;
 
 var playButton = d3.select("body")
 	.append("div")
@@ -90,7 +89,6 @@ function update(songChoice){
 			var song = document.getElementById('audioElement')
 			song.muted = muteToggle;
 			muteToggle = !muteToggle;
-			console.log(muteToggle)
 		})
 
 	var data = prepare(songs[songChoice])
@@ -171,13 +169,10 @@ function update(songChoice){
 		.attr("fill", function(d) {return color[d.chord]})
 		.attr("id", function(d) { return "chord" + d.beat_song	})
 
-
 	var text = chord.append("text")
 		.attr("x", function(d,i) {return x(d.beat_measure) + (rect_xy * d.duration)/2})
 		.attr("y", function(d) {return spacingToggle ? y(d.chord) + rect_xy/2 : z(d.chord) + rect_xy/2 })
 		.attr("dy","0.35em")
-		// .style("text-anchor","middle")
-		// .style("font","40px sans-serif")
 		.text(function(d) {return nameToggle ? d.chord : l(d.chord); })
 
 
