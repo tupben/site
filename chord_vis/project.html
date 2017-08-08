@@ -36,11 +36,6 @@ var playButton = d3.select("body")
 		})
 
 function update(songChoice){
-	d3.select(".container")
-		.remove()
-	d3.select(".title")
-		.remove()
-
 	var spacingButton = d3.select("body").append("input")
 		.attr("id","spacing")
 		.attr("type","button")
@@ -113,11 +108,11 @@ function update(songChoice){
 
 
 	var color = {	1:"#6baed6",
-					2:"#fd8d3c",
-					3:"#fdd0a2",
-					4:"#3182bd",
-					5:"#c6dbef",
-					6:"#e6550d"
+			2:"#fd8d3c",
+			3:"#fdd0a2",
+			4:"#3182bd",
+			5:"#c6dbef",
+			6:"#e6550d"
 	}
 
 	var title = d3.select("body").append("div")
@@ -129,7 +124,6 @@ function update(songChoice){
 		.attr("class","container")
 	  .append("div")
 		.attr("class","inner")
-		.attr("background-color","lightgray")
 		.style("width", width * 4 + "px")
 		.attr("height", height + margin.top + margin.bottom)
 		.style("margin-left", width * 2 + "px")
@@ -150,14 +144,14 @@ function update(songChoice){
 	  	.attr("beats",function(d) {return d3.sum(d, function(d){return d.duration; }) })
 
 	var line = panel.append("line")
-			.attr("x1",0)
-			.attr("y1",0)
-			.attr("x2",0)
-			.attr("y2",height)
+		.attr("x1",0)
+		.attr("y1",0)
+		.attr("x2",0)
+		.attr("y2",height)
 
 	var chord = panel.selectAll("g")
-				.data(function(d) {return d})
-			.enter()
+			.data(function(d) {return d})
+		.enter()
 
 	var rect = chord.append("rect")
 		.attr("width", function(d) {return rect_xy * d.duration; })
@@ -193,16 +187,15 @@ function update(songChoice){
 
 	function scroll(){
 		svg.transition()
-				.delay(function() { return data.delay > 0 ? data.delay : 0 })
+				.delay(data.delay)
 		  	.ease("linear")
-				.style("margin-left", -width * iter + "px")
+				.style("margin-left", -width * iter++ + "px")
 				.duration(interval)
-		iter += 1
 	}
 
 	var song = document.getElementById('audioElement')
-	  song.src=data.source;
-	  song.play();
+	song.src = data.source;
+	song.play();
 	blink();
 	scroll();
 }
@@ -222,20 +215,18 @@ function prepare(data){
 		let beat_measure = 0;
 		for (b of a) {
 			if (typeof(b) === "number"){
-				new_panel.push({  	chord:b,
-									duration:1,
-									beat_measure: beat_measure,
-									beat_song: beat_song
-												});
-				beat_measure += 1;
-				beat_song += 1;
+				new_panel.push({  		chord:b,
+								duration:1,
+								beat_measure: beat_measure++,
+								beat_song: beat_song++
+								});
 			} else if (typeof(b) === "object") {
 					for (c of b) {
-						new_panel.push({  	chord:c,
-											duration: 0.5,
-											beat_measure:beat_measure,
-											beat_song: beat_song
-															});
+						new_panel.push({  		chord:c,
+										duration: 0.5,
+										beat_measure:beat_measure,
+										beat_song: beat_song
+										});
 						beat_measure += 0.5;
 						beat_song += 0.5;
 					};
@@ -244,11 +235,8 @@ function prepare(data){
 		new_data.chords.push(new_panel);
 	};
 	return new_data;
-
 };
-
 });
-
 </script>
 </body>
 </html>
