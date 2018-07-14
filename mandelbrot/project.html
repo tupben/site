@@ -12,7 +12,7 @@
 
   <div style="margin-left: 80px;">
     <h4>
-      Use arrow keys to move up, down, left, right<br>
+      i / k / j / l : Move up, down, left, right<br>
       'a' and 's' : Zoom out and in, respectively <br>
       'z' and 'x' : Decrease and increase depth of calculation, respectively <br>
       'r' : Reload image
@@ -39,19 +39,19 @@ var bailout = 70;
 
 window.onkeyup = function(e) {
    switch (e.key) {
-    case 'ArrowUp':
+    case 'i':
       shiftY += zoom/4
       execute(zoom,shiftX,shiftY,bailout)
       break
-    case 'ArrowDown':
+    case 'k':
       shiftY -= zoom/4
       execute(zoom,shiftX,shiftY,bailout)
       break
-    case 'ArrowLeft':
+    case 'j':
       shiftX -= zoom/4
       execute(zoom,shiftX,shiftY,bailout)
       break
-    case 'ArrowRight':
+    case 'l':
       shiftX += zoom/4
       execute(zoom,shiftX,shiftY,bailout)
       break
