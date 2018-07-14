@@ -8,14 +8,13 @@
 <body>
   <div style="margin: auto; width: 50%;">
 
-	<canvas id="canvas" width="650" height="650" style="border:1px solid darkgray;"></canvas> <!-- 650 -->
+	<canvas id="canvas" width="700" height="700" style="border:1px solid darkgray;"></canvas> <!-- 650 -->
 
   <div style="margin-left: 80px;">
     <h4>
       i / k / j / l : Move up, down, left, right<br>
       'a' and 's' : Zoom out and in, respectively <br>
       'z' and 'x' : Decrease and increase depth of calculation, respectively <br>
-      'r' : Reload image
     </h4> 
   </div>
   </div>
@@ -35,7 +34,7 @@ var data = imageData.data;
 var zoom = 3;
 var shiftX = -.5;
 var shiftY = 0;
-var bailout = 70;
+var bailout = 60;
 
 window.onkeyup = function(e) {
    switch (e.key) {
@@ -71,13 +70,6 @@ window.onkeyup = function(e) {
       bailout *= 4/5
       execute(zoom,shiftX,shiftY,bailout)
       break
-    case 'r':
-      zoom = 3;
-      shiftX = -.5;
-      shiftY = 0;
-      bailout = 70;
-      execute(zoom,shiftX,shiftY,bailout)
-      break
    }
 }
 
@@ -88,7 +80,7 @@ function execute(zoom, shiftX, shiftY, bailout){
   for (var y = 0; y < canvasHeight; ++y) {
       for (var x = 0; x < canvasWidth; ++x) {
           var value = returnValue(x,y,zoom,shiftX, shiftY, bailout);
-          var colorArr = getColorArr( value * 0.05);
+          var colorArr = getColorArr( value * 0.03);
           data[4 * (y * canvasWidth + x) + 0] = colorArr[0];    // red
           data[4 * (y * canvasWidth + x) + 1] = colorArr[1];    // green
           data[4 * (y * canvasWidth + x) + 2] = colorArr[2];    // blue
@@ -103,14 +95,14 @@ function getColorArr( val ) {
     return [0,0,0];
   }
 
-  var r = 255*(Math.sin(val*Math.PI * 2/3 + Math.PI/4) + 1) / 2
-  var g = 255*(Math.sin(val*Math.PI * 2/3 - Math.PI/4) + 1) / 2
-  var b = 255*(Math.sin(val*Math.PI * 1/9) + 1) / 2
+  var r = 255*Math.sin(Math.PI * (val + 0/4))**.5
+  var g = 255*Math.sin(Math.PI * (val + 1/4))**.5
+  var b = 255*Math.sin(Math.PI * (val + 2/4))**.5
 
   // another coloring scheme. You can get lost in this.
-  // var r = 255*Math.sin(val*Math.PI)
-  // var g = 255*Math.sin(val*Math.PI+Math.PI/4)
-  // var b = 255*Math.cos(val*Math.PI)
+  // var r = 255*(Math.sin(val*Math.PI * 2/3 + Math.PI/4) + 1) / 2
+  // var g = 255*(Math.sin(val*Math.PI * 2/3 - Math.PI/4) + 1) / 2
+  // var b = 255*(Math.sin(val*Math.PI * 1/9) + 1) / 2
 
   return [r,g,b]
 }

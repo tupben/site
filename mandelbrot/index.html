@@ -15,7 +15,7 @@ We start with a simple formula:
 
                                   <i>f</i>(z) = z<sup>2</sup> + c
 
-This equation is the heart of the Mandelbrot fractal. It is a recurrant equation, meaning once you've calculated <i>f</i>(z), you plug that right back in as an input and run the equation again. And again. And again.
+This equation is the heart of the Mandelbrot fractal. It is a recurrent equation, meaning once you've calculated <i>f</i>(z), you plug that right back in as an input and run the equation again. And again. And again.
 
 We are interested in what happens to <i>f</i>(z) after many iterations. Does it get very big or does it hover around some value? In technical words, does it diverge or does it stay bounded? The answer to this question will depend on what values for z and c we choose.
 
@@ -33,7 +33,7 @@ Now we do it again. Our constant remains 1. But for each step now, our new z com
 <i>f</i>(11)= 11<sup>2</sup> + 2
         = 123
 
-What is happening to <i>f</i>(z)? We are only concerned with two possibilities: Does it diverge to inifinity, or does it stay bounded, eat, shop and live local? Following our results: 1, 1, 3, 11, 123 ... well, yes, <i>f</i>(z) diverges when c = 1. The Mandelbrot set is the set of all numbers who DON'T cause this equation to diverge. 1, therefore, is not in the Mandelbrot set. We could check other values and find that they stay bounded. -1, for example, stays near home as does i/2. You can try it yourself, or take my word for it.
+What is happening to <i>f</i>(z)? We are only concerned with two possibilities: Does it diverge to infinity, or does it stay bounded, eat, shop and live local? Following our results: 1, 1, 3, 11, 123 ... well, yes, <i>f</i>(z) diverges when c = 1. The Mandelbrot set is the set of all numbers who DON'T cause this equation to diverge. 1, therefore, is not in the Mandelbrot set. We could check other values and find that they stay bounded. -1, for example, stays near home as does i/2. You can try it yourself, or take my word for it.
 
 Where does the cool fractal part come from? It is a graph of these results. Imagine a complex plane with a horizontal real value axis and a vertical imaginary value axis:
 
