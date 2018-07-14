@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<meta name=viewport content="width=device-width, initial-scale=1" charset="utf-8">
+
+<head>
+<title>Mandelbrot</title>
+</head>
+
+<body>
+  <div style="margin: auto; width: 50%;">
+
+	<canvas id="canvas" width="650" height="650" style="border:1px solid darkgray;"></canvas> <!-- 650 -->
+
+  <div style="margin-left: 80px;">
+    <h4>
+      Use arrow keys to move up, down, left, right<br>
+      'a' and 's' : Zoom out and in, respectively <br>
+      'z' and 'x' : Decrease and increase depth of calculation, respectively <br>
+      'r' : Reload image
+    </h4> 
+  </div>
+  </div>
+
+</body>
+
+<script>
+
+var canvas = document.getElementById('canvas');
+var canvasWidth  = canvas.width;
+var canvasHeight = canvas.height;
+var ctx = canvas.getContext('2d');
+var imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+
+var data = imageData.data;
+
+var zoom = 3;
+var shiftX = -.5;
+var shiftY = 0;
+var bailout = 70;
+
+window.onkeyup = function(e) {
+   switch (e.key) {
+    case 'ArrowUp':
+      shiftY += zoom/4
+      execute(zoom,shiftX,shiftY,bailout)
+      break
+    case 'ArrowDown':
+      shiftY -= zoom/4
+      execute(zoom,shiftX,shiftY,bailout)
+      break
+    case 'ArrowLeft':
+      shiftX -= zoom/4
+      execute(zoom,shiftX,shiftY,bailout)
+      break
+    case 'ArrowRight':
+      shiftX += zoom/4
+      execute(zoom,shiftX,shiftY,bailout)
+      break
+    case 's':
+      zoom *= .5
+      execute(zoom,shiftX,shiftY,bailout)
+      break
+    case 'a':
+      zoom *= 2
+      execute(zoom,shiftX,shiftY,bailout)
+      break
+    case 'x':
+      bailout *= 5/4
+      execute(zoom,shiftX,shiftY,bailout)
+      break
+    case 'z':
+      bailout *= 4/5
+      execute(zoom,shiftX,shiftY,bailout)
+      break
+    case 'r':
+      zoom = 3;
+      shiftX = -.5;
+      shiftY = 0;
+      bailout = 70;
+      execute(zoom,shiftX,shiftY,bailout)
+      break
+   }
+}
+
+execute(zoom,shiftX,shiftY,bailout);
+
+
+function execute(zoom, shiftX, shiftY, bailout){
+  for (var y = 0; y < canvasHeight; ++y) {
+      for (var x = 0; x < canvasWidth; ++x) {
+          var value = returnValue(x,y,zoom,shiftX, shiftY, bailout);
+          var colorArr = getColorArr( value * 0.05);
+          data[4 * (y * canvasWidth + x) + 0] = colorArr[0];    // red
+          data[4 * (y * canvasWidth + x) + 1] = colorArr[1];    // green
+          data[4 * (y * canvasWidth + x) + 2] = colorArr[2];    // blue
+          data[4 * (y * canvasWidth + x) + 3] = 255;            // alpha
+      }
+  }
+  ctx.putImageData(imageData, 0, 0);
+}
+
+function getColorArr( val ) {
+  if (val == 0){
+    return [0,0,0];
+  }
+
+  var r = 255*(Math.sin(val*Math.PI * 2/3 + Math.PI/4) + 1) / 2
+  var g = 255*(Math.sin(val*Math.PI * 2/3 - Math.PI/4) + 1) / 2
+  var b = 255*(Math.sin(val*Math.PI * 1/9) + 1) / 2
+
+  // another coloring scheme. You can get lost in this.
+  // var r = 255*Math.sin(val*Math.PI)
+  // var g = 255*Math.sin(val*Math.PI+Math.PI/4)
+  // var b = 255*Math.cos(val*Math.PI)
+
+  return [r,g,b]
+}
+
+function returnValue(x,y,zoom,shiftX, shiftY, bailout){
+  x = x * zoom / canvasWidth  - zoom/2 + shiftX;
+  y = y * zoom / canvasHeight - zoom/2 - shiftY;
+  var xy = [0,0]
+
+	for (var a = 0; a < bailout; a++){
+		if (xy[0]**2 + xy[1]**2 > 4){
+			return a + 1;
+		}
+    else {
+      // mandelbrot functions, ordered by power [2,3,4,6]:
+      xy = [xy[0]**2 - xy[1]**2 + x,2*xy[0]*xy[1] + y];
+      // xy = [xy[0]**3 - 3*xy[0]*(xy[1]**2) + x, 3*(xy[0]**2)*xy[1] - xy[1]**3 + y];
+      // xy = [xy[0]**4 - 6*(xy[0]**2)*(xy[1]**2)+xy[1]**4+x, 4*(xy[0]**3)*xy[1] - 4*xy[0]*(xy[1]**3)+y];
+      // xy = [xy[0]**6 - 15*(xy[0]**4)*(xy[1]**2) + 15*(xy[0]**2)*(xy[1]**4) - xy[1]**6 + x, 6*(xy[0]**5)*xy[1] - 20*(xy[0]**3)*(xy[1]**3) + 6*xy[0]*(xy[1]**5) + y];
+    }
+	}
+	return 0;
+}
+
+
+</script>
