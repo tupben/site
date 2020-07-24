@@ -11,7 +11,7 @@
 
 This is my rendering of the Mandelbrot fractal. If you're new to the Mandelbrot fractal, this <a href="https://www.youtube.com/watch?v=NGMRB4O922I">Numberphile video</a> does a great job explaining it. I will try, too.
 
-We start with a simple formula:
+We start with a this formula:
 
                                   <i>f</i>(z) = z<sup>2</sup> + c
 
@@ -39,7 +39,7 @@ Where does the cool fractal part come from? We'll need to dive into complex numb
 
 <img src="complex_plane.png" alt="complex plane" width="500px" style="display: block; margin-right: auto; margin-left: auto; ">
 
- To produce the Mandelbrot fractal, do as follows: Try each point on the complex plane as the constant 'c' in our Mandelbrot equation => <i>f</i>(z) = z<sup>2</sup> + c. If you iterate and find that the result diverges with a certain 'c' value, then that 'c' is not in the set. On the other hand if the results stay 'bounded', then the point is in the set. Color these two groups of points two different colors. Amazingly, this very simple procedure gives rise to the beautiful Mandelbrot fractal.
+To produce the Mandelbrot fractal, do as follows: Try each point on the complex plane as the constant 'c' in our Mandelbrot equation <i>f</i>(z) = z<sup>2</sup> + c. If you iterate and find that the result diverges for a certain 'c' value, then that 'c' is not in the set. On the other hand, if the results stay 'bounded' then the point is in the set. Now color these two groups of points two different colors. Amazingly, this very simple procedure gives rise to the beautiful Mandelbrot fractal.
 
 But this doesn't account for all the colors. What's with the colors? They certainly help to make the fractal look cool and trippy. But there is mathematical justification to the psychedelic addition. Consider investigating each point and checking whether it is bounded. At what point do you give up? We have the concept called 'bailout' - it tells us how many times to iterate the function before stopping. The rule is: Iterate the equation. If at any point you produce an <i>f</i>(z) that is more than 2 units away from 0, then that 'c' value is a goner. However, if you iterate up to the bailout number and you haven't escaped, consider the point bounded.
 

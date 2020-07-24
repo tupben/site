@@ -51,7 +51,7 @@ function update(songChoice){
 		.on("click", function() {
 			spacingButton
 				.attr("value",function(){
-					return spacingToggle ? "scalar spacing" : "5ths"
+					return spacingToggle ? "steps" : "5ths"
 				})
 			d3.selectAll("rect")
 					.attr("y", function(d) {return spacingToggle ? z(d.chord) : y(d.chord)})
