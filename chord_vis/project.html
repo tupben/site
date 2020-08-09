@@ -10,7 +10,8 @@
 
 <script src="https://d3js.org/d3.v3.min.js"></script>
 <script>
-var songChoice = "If Everybody Helps";
+
+var songChoice = "Mirrors";
 
 d3.json("chordData.json", function(songs) {
 
@@ -36,6 +37,7 @@ var playButton = d3.select("body")
 		})
 
 function update(songChoice){
+
 	var spacingButton = d3.select("body").append("input")
 		.attr("id","spacing")
 		.attr("type","button")
@@ -195,9 +197,12 @@ function update(songChoice){
 
 	var song = document.getElementById('audioElement')
 	song.src = data.source;
-	song.play();
-	blink();
-	scroll();
+	song.oncanplay = function(){
+		song.play();
+		blink();
+		scroll();
+
+	}
 }
 
 function prepare(data){
