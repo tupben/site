@@ -27,8 +27,18 @@ new_project("Chord Visualizer","chord_vis")
 new_project("The Mandelbrot Fractal","mandelbrot")
 new_project("The Game of Hex","hex")
 new_project("The Game of Life","game_of_life")
+// new_project("58 Joralemon","subway")
 // new_project("The Multi-Armed Bandit Problem","multiarmed_bandit")
 
+
+projectBox
+		.append("a")
+			.attr("id",'subway')
+			.attr("class","project")
+			.attr("href", "https://58joralemon.vercel.app/")
+			.style("background-image","url(subway/thumb.png)")
+			.text("58 Joralemon")
+			.style("color", "white")
 
 
 function new_project(title,url,titleColor="black"){
