@@ -21,24 +21,40 @@
 <script>
 
 var projectBox = d3.select(".container").append("div").attr("class","projectBox")
+var videoBox = d3.select(".container").append("div").attr("class","projectBox")
+	.text("Videos")
+	.style("font-size","3em")
+	.style("color","rgb(0, 0, 93)")
+
 
 new_project("Linear Algebra Grapher","linear_graph","white")
 new_project("Chord Visualizer","chord_vis")
 new_project("The Mandelbrot Fractal","mandelbrot")
 new_project("The Game of Hex","hex")
 new_project("The Game of Life","game_of_life")
+// textBox.append.("a")
+// 	.attr("class","box")
+// 	.text("Hello World!")
 // new_project("58 Joralemon","subway")
 // new_project("The Multi-Armed Bandit Problem","multiarmed_bandit")
+new_video("An Introduction to Group Theory","https://youtu.be/IRZK3Dq0OZM","group", "white")
+new_video("The Circular Train Puzzle","https://youtu.be/y5TExT6QNCc","train")
+new_video("What is a Tessellation?","https://youtu.be/3VSyDpCEiyY","tessellation")
 
 
-projectBox
+
+
+function new_video(title,url,dir, titleColor="black"){
+	videoBox
 		.append("a")
-			.attr("id",'subway')
+			.attr("id",url)
 			.attr("class","project")
-			.attr("href", "https://58joralemon.vercel.app/")
-			.style("background-image","url(subway/thumb.png)")
-			.text("58 Joralemon")
-			.style("color", "white")
+			.attr("href", url)
+			.style("background-image","url(" + dir + "/thumb.png)")
+			.text(title)
+			.style("color", titleColor)
+}
+	
 
 
 function new_project(title,url,titleColor="black"){
@@ -51,5 +67,16 @@ function new_project(title,url,titleColor="black"){
 			.text(title)
 			.style("color", titleColor)
 }
+
+// Just for subway
+projectBox
+		.append("a")
+			.attr("id",'subway')
+			.attr("class","project")
+			.attr("href", "https://58joralemon.vercel.app/")
+			.style("background-image","url(subway/thumb.png)")
+			.text("58 Joralemon")
+			.style("color", "white")
+
 
 </script>
