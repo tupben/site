@@ -221,13 +221,9 @@ var sidebar = d3.select("body").append("div")
 function handleClick(e){
   var keyCode = e.keyCode ? e.keyCode : e.which;
   if (keyCode === 13){
-    console.log(13)
+    console.log(13);
     updateValues();
     stopStartFunction();
-    if (runButton.attr("value")=== "Run"){
-    stopStartFunction();
-  }
-    // stopStartFunction();
   }
 }
 
@@ -292,6 +288,7 @@ for (row in fieldDict){
 
 sidebar.append("div")
     .attr("id","randRow")
+    // .style("margin-top","20px")
 
 
 var randLabel = d3.select("#randRow")
@@ -346,22 +343,24 @@ var runLabel = d3.select("#runRow")
   .attr("class","field-label")
 
 
-
 function updateValues (){
+  alert(3)
   fps = document.getElementById("speedTextBox").value || 2
-    radius = parseInt(document.getElementById("radiusTextBox").value) || 1
-    spawn = document.getElementById("spawnTextBox").value || 0
+      radius = parseInt(document.getElementById("radiusTextBox").value) || 1
+      spawn = document.getElementById("spawnTextBox").value || 0
 
-    birthRaw = document.getElementById("birthTextBox").value
-    birth = birthRaw ? birthRaw.split(",").map(x => +x) : [3]
-    
-    liveRaw = document.getElementById("lifeTextBox").value
-    live = liveRaw ? liveRaw.split(",").map(x => +x) : [2,3]
-    
-    neighbors = makeNeighbors(radius)
-    reloadSpeed = 1000 / fps
 
-  }
+      birthRaw = document.getElementById("birthTextBox").value
+      birth = birthRaw ? birthRaw.split(",").map(x => +x) : [3]
+      
+      liveRaw = document.getElementById("lifeTextBox").value
+      live = liveRaw ? liveRaw.split(",").map(x => +x) : [2,3]
+      
+      neighbors = makeNeighbors(radius)
+      reloadSpeed = 1000 / fps
+
+}
+
 
 var runButton = d3.select("#runRow")
   .append("input")
@@ -371,7 +370,8 @@ var runButton = d3.select("#runRow")
     .attr("class","sideButton")
     .attr("value","Run")
     .on("click", function(){
-      updateValues();
+      updateValues()
+
       stopStartFunction();
     })
     

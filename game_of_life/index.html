@@ -10,7 +10,7 @@
 <div id="container">
 	<a href = "../index.html" id="back">back</a>
 	<div class="box" id="details">
-The Game of Life is a simulation that creates beautiful life-like populations with very simple rules. Each node is either dead or alive and each turn it asks it self 2 questions:
+The Game of Life is a simulation that creates beautiful life-like populations with very simple rules. Each node is either dead or alive, and each turn it asks itself 2 questions:
 
 		Am I alive?
 			Yes: 	How many living neighbors do I have?
@@ -20,7 +20,17 @@ The Game of Life is a simulation that creates beautiful life-like populations wi
 													3: 	COME ALIVE
 												not	3: 	STAY DEAD
 
-There are some wonderful natural patterns that pop up under these rules. Some groups are stable - they won't change unless 'bothered'. Can you can find the smallest stable group? Can you find the largest stable group? Can you make a group that oscilates between 2 or more states, but returns to its starting value?
+There are some wonderful natural patterns that pop up under these rules. Some groups are stable - they won't change unless 'bothered'. Can you can find the smallest stable group? Can you find the largest stable group? Can you make a group that oscillates between 2 or more states, but returns to its starting value?
+
+EDIT: It's 2022 and I've recently returned to this project (which I made in 2017) to add some pizazz. Some new modifications allow you to control the parameters of the game:
+
+<b>Birth conditions</b> and <b>Life conditions</b> describe how many neighbors a cell must have to be born and to stay alive. The default for these two is 3 and 2,3 (respectively) but different conditions yield different population behaviors.
+
+<b>Neighborhood radius</b> describes how many nearby cells to check to satisfy the above conditions. Traditionally, the neighborhood of a cell is its 8 adjacent cells, but this parameter allows you to change the radius of that neighborhood.
+
+<b>Spontaneity</b> is the probability that a dead cell comes to life spontaneously, regardless of its neighboring conditions. This is not traditionally part of the Game of Life, but I thought it was a cool to see life form ex nihilo. Try something really small like 0.005, crank the speed up, and watch for life.
+
+I've also changed the topology so that the game is played on a torus rather than a square. That means, a glider that goes off the top will come back up through the bottom, rather than collapsing on a wall.
 
 I implemented this using D3. An underlying array is holding the values for each node. The D3 data-join is creating and updating the elements as the data change.
 
