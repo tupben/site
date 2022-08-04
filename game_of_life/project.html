@@ -18,7 +18,11 @@ body{
 }
 
 .pixel:hover {
-  box-shadow: 0px 0px 0px 3px red inset;
+  box-shadow: 0px 0px 0px 4px red inset;
+}
+
+.pixel:active {
+  box-shadow: 0px 0px 0px 0px red inset;
 }
 
 
@@ -32,7 +36,7 @@ body{
 }
 
 input {
-  height: 45px;
+  height: 35px;
   width: 250px;
   font-size: 24px;
   background-color: transparent;
@@ -53,7 +57,7 @@ input:focus::placeholder {
   text-align: center;
   color: black;
   background-color: lightgray;
-  margin: 10px 20px;
+  margin: 10px 10px;
 }
 
 .field-text:hover {
@@ -61,12 +65,12 @@ input:focus::placeholder {
 }
 
 .sideButton {
-  margin: 10px 20px;
+  margin: 10px 0px;
   cursor: pointer;
   text-align: center;
   color: black;
   background-color: lightgray;
-  height: 50px;
+  height: 45px;
   width: 260px;
 }
 
@@ -86,19 +90,27 @@ input:focus::placeholder {
   <div id="chart"></div>
 
 <script src="https://d3js.org/d3.v3.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.js" type="text/javascript"></script>
 <script>
 
+
+
+
+
+
 var id = -1;
+var allData = []
 var data = new Array();
-var boardSize = 110;
+var boardSize = 100;
 var animate = null;
 var chartDim = 650;
 var pixDim = chartDim / boardSize;
-
+var click = false
 
 clearMap();
 randMap();
+
 
 function clearMap(){
   for (i=0;i<boardSize;i++) {
@@ -113,7 +125,7 @@ function clearMap(){
 function randMap(){
   for (i=0;i<boardSize;i++) {
     for (j=0;j<boardSize;j++) {
-      data[i][j] = Math.random()<.15 ? 1 : 0
+      data[i][j] = Math.random()<.10 ? 1 : 0
     }
   }
   updateElem(data);
@@ -133,6 +145,16 @@ function makeNeighbors(x) {
 }
 
 
+function saveFile(){
+  var content = allData
+  var a = document.createElement("a");
+  a.href = window.URL.createObjectURL(new Blob(['[' + content + ']'], {type: "text/plain"}));
+  a.download = "life_list.txt";
+  a.click();
+}
+
+
+
 var row = d3.select("#chart")
   .selectAll(".row")
     .data(data)
@@ -149,12 +171,26 @@ var pixel = row
         .style("background-color",function(d) {return d ? "steelblue" : "white"})
         .attr("id",function(){id++; return "["+Math.floor(id/boardSize)+","+ id%boardSize+"]"})
         .on("click", function() {
+          click = true
+          // alert('you are here')
+          // allData.push(unflatten(data))
+
           var y = eval(this.id)[0]
           var x = eval(this.id)[1]
           d3.select(this)
             .style("background-color", data[y][x]? "white" : "steelblue");
           data[y][x]=1-data[y][x];
         })
+        // .on("mouseover",function(){
+        //   console.log(12)
+        //   if(click == true){
+        //     console.log(23)
+        // //do some stuff
+        // }
+        // }
+        // )
+
+
 
 
 function updateElem(data){
@@ -203,7 +239,17 @@ function newDatum(a,b) {
 }
 
 
+function unflatten(arr){
+  console.log(arr)
+  var fixed = '[' + arr.map(item => '[' + item.join() + ']') + ']'
+  console.log(fixed)
+  return fixed
+}
+
+
+
 function updateData(data1){
+  // allData.push(unflatten(data1))
   var data2 = _.cloneDeep(data1)
   for (i in data1){
     for (j in data1){
@@ -212,7 +258,6 @@ function updateData(data1){
   }
   return data2;
 }
-
 
 var sidebar = d3.select("body").append("div")
     .attr("id","sidebar")
@@ -312,6 +357,30 @@ var randField = d3.select("#randRow")
     })
 
 
+
+
+
+sidebar.append("div")
+    .attr("id","saveRow")
+
+
+var saveLabel = d3.select("#saveRow")
+.append("input")
+  .attr("type","button")
+  .attr("class","field-label")
+
+
+var saveField = d3.select("#saveRow")
+.append("input")
+.attr("type","button")
+.attr("class","sideButton")
+.attr("id","clearButton")
+.attr("value","Save")
+.on("click",function(){
+  saveFile();
+})
+
+
 sidebar.append("div")
     .attr("id","clearRow")
 
@@ -330,10 +399,13 @@ var clearField = d3.select("#clearRow")
 .attr("value","Clear")
 .on("click",function() {
   clearMap();
+  allData = [];
   if (runButton.attr("value") != "Run"){
     stopStartFunction();
   }
   })
+
+
 
 
 sidebar.append("div")
@@ -365,7 +437,7 @@ function updateValues (){
 
 var runButton = d3.select("#runRow")
   .append("input")
-    .style("margin-top","60px")
+    .style("margin-top","40px")
     .attr("id","runButton")
     .attr("type","button")
     .attr("class","sideButton")
@@ -382,6 +454,7 @@ stopStartFunction = function(){
 }
 
 function start(){
+  allData.push(unflatten(data))
   data = updateData(data);
   updateElem(data);
   animate = setTimeout(start,reloadSpeed);
@@ -396,7 +469,23 @@ change = function() {
 stop = function(){
   clearTimeout(animate)
   animate = null;
+
+
+
+
+
+
+
+
+
+
 }
 </script>
+
+
+
+
+
+
 </body>
 </html>
