@@ -95,7 +95,7 @@ var domain = {
     endPoint : [0,0],
     initialBoxType : 0,
     initialBoxDim: [2,1],
-    d: 40,
+    d: 20,
     active: true
 }
 
@@ -170,7 +170,8 @@ function makeGraph(domain){
 
 
   for (let i = 1; i < hoppingSequence.length; i++) {
-    var pair = hoppingSequence[i-1].toString() + hoppingSequence[i].toString();
+    var noComma = hoppingSequence.replace(/,/g,'')
+    var pair = noComma[i-1] + noComma[i];
     if (['10','23'].includes(pair)){
       homologyClass[0] += 1;
       homologyString += 'A'
@@ -180,7 +181,7 @@ function makeGraph(domain){
     }
   }
 
-  homologyOutputBox.value = homologyString + '   =>   (' + homologyClass.toString() + ')';
+  homologyOutputBox.value = '(' + homologyClass.toString() + ')  =>  ' + homologyString;
 }
 
 
