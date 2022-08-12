@@ -168,9 +168,8 @@ function makeGraph(domain){
   hopOutputBox.value = hoppingSequence
 
 
-
-  for (let i = 1; i < hoppingSequence.length; i++) {
-    var noComma = hoppingSequence.replace(/,/g,'')
+  var noComma = hoppingSequence.replace(/,/g,'')
+  for (let i = 1; i < noComma.length; i++) {
     var pair = noComma[i-1] + noComma[i];
     if (['10','23'].includes(pair)){
       homologyClass[0] += 1;
