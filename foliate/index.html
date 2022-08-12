@@ -77,7 +77,7 @@
       <input id = 'slopeOutput' type = "text" class="textBox" value = "" onkeypress="handleClick(event,'slopeOutput')"\>
       <div class="label"\>"hopping" sequence:</div>
       <input id = 'hopOutput' type = "text" class="textBox" value = "" onkeypress="handleClick(event,'hopOutput')"\>
-      <div class="label"\>homology sequence:</div>
+      <div class="label"\>homology class:</div>
       <input id = 'homologyOutput' type = "text" class="textBox" value = "" onkeypress="handleClick(event,'homologyOutput')"\>
     </div>
 </body>
@@ -171,7 +171,6 @@ function makeGraph(domain){
 
   for (let i = 1; i < hoppingSequence.length; i++) {
     var pair = hoppingSequence[i-1].toString() + hoppingSequence[i].toString();
-    console.log(pair)
     if (['10','23'].includes(pair)){
       homologyClass[0] += 1;
       homologyString += 'A'
