@@ -106,7 +106,7 @@ var boardSize = 100;
 var animate = null;
 var chartDim = 650;
 var pixDim = chartDim / boardSize;
-var click = false
+
 
 clearMap();
 randMap();
@@ -270,9 +270,8 @@ function handleClick(e){
     updateValues();
     stopStartFunction();
     if (runButton.attr("value")=== "Run"){
-    stopStartFunction();
+      stopStartFunction();
   }
-    // stopStartFunction();
   }
 }
 
