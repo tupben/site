@@ -76,11 +76,16 @@
       <div class="label"\>slope:</div>
       <input id = 'slopeOutput' type = "text" class="textBox" value = "" onkeypress="handleClick(event,'slopeOutput')"\>
       <div class="label"\>"hopping" sequence:</div>
-      <input id = 'hopOutput' type = "text" class="textBox" value = "" onkeypress="handleClick(event)"\>
+      <input id = 'hopOutput' type = "text" class="textBox" value = "" onkeypress="handleClick(event,'hopOutput')"\>
+      <div class="label"\>homology sequence:</div>
+      <input id = 'homologyOutput' type = "text" class="textBox" value = "" onkeypress="handleClick(event,'homologyOutput')"\>
     </div>
 </body>
 
 <script>
+
+
+
 
 var colorList = ['#9FC5E8','#FFE599','#B4A7D6','#FFC4C4']
 
@@ -105,9 +110,12 @@ function makeGraph(domain){
   var stepOutputBox = document.getElementById("stepOutput")
   var slopeOutputBox = document.getElementById("slopeOutput")
   var hopOutputBox = document.getElementById("hopOutput")
+  var homologyOutputBox = document.getElementById("homologyOutput")
   var c = document.getElementById("canvas");
   var ctx = c.getContext("2d");
   var hoppingSequence = ''
+  var homologyString = '';
+  var homologyClass = [0,0];
   var scaleFactor = domain.initialBoxDim[0] / domain.initialBoxDim[1]
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -143,10 +151,9 @@ function makeGraph(domain){
     }
 
     hoppingSequence += boxType.toString()
-
     if (m1 > y1/x1){
       if (boxType == 0){scale *= scaleFactor}
-      else if (boxType == 3) {scale /= scaleFactor}
+      else if (boxType == 3) {scale /= scaleFactor;}
       y0 = y1;
       boxType = [3,2,1,0][boxType];
     }
@@ -159,6 +166,22 @@ function makeGraph(domain){
   stepOutputBox.value = (domain.endPoint[0]/d).toString() + ', '+ (domain.endPoint[1]/d).toString()
   slopeOutputBox.value = (domain.endPoint[1]/domain.endPoint[0]).toString()
   hopOutputBox.value = hoppingSequence
+
+
+
+  for (let i = 1; i < hoppingSequence.length; i++) {
+    var pair = hoppingSequence[i-1].toString() + hoppingSequence[i].toString();
+    console.log(pair)
+    if (['10','23'].includes(pair)){
+      homologyClass[0] += 1;
+      homologyString += 'A'
+    } else if (['30','21'].includes(pair)){
+      homologyClass[1] += 1;
+      homologyString += 'B'
+    }
+  }
+
+  homologyOutputBox.value = homologyString + '   =>   (' + homologyClass.toString() + ')';
 }
 
 
@@ -183,10 +206,13 @@ function handleClick(e,buttonId){
   if(e.keyCode === 13) {
     var input = document.getElementById(buttonId).value;
     if (typeof eval(input) === "number"){
+
       if (buttonId == 'stepOutput'){
           val = input.replace(' ','').split(',')
-          domain.endPoint = [val[0] * domain.d, val[1] * domain.d]
-      } else if (buttonId == 'slopeOutput'){
+          domain.endPoint = [eval(val[0]) * domain.d, eval(val[1]) * domain.d]
+      }
+      
+      else if (buttonId == 'slopeOutput'){
           input = eval(input)
           var target = Math.ceil((domain.canvasWidth ) / domain.d) * domain.d
           if (input > domain.canvasHeight/domain.canvasWidth){
@@ -194,9 +220,13 @@ function handleClick(e,buttonId){
           } else {
             domain.endPoint = [domain.canvasWidth, domain.canvasWidth * input]
           }
-      } else if (buttonId == 'dimpleOutput'){
+      }
+      
+      else if (buttonId == 'dimpleOutput'){
           domain.initialBoxDim = input.replace(' ','').split(',')
       }
+
+
       makeGraph(domain);
       domain.active = false;
     }
