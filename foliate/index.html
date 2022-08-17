@@ -10,6 +10,7 @@
 #container {
   display: flex;
   flex-direction: row;
+  text-decoration-thickness: 30px;
   
   
 }
@@ -55,8 +56,7 @@
   border: RGB(230,230,230) 2px solid;
   padding: 0 20px;
   margin: 0 0 40px 0;
-  font-family: "Times New Roman", Times, serif;
-  
+  font-family: "Times New Roman", Times, serif;  
 }
 
 .textBox:hover {
@@ -78,7 +78,7 @@
       <input id = 'slopeOutput' type = "text" class="textBox" value = "" onkeypress="handleClick(event,'slopeOutput')"\>
       <div class="label"\>"hopping" sequence:</div>
       <input id = 'hopOutput' type = "text" class="textBox" value = "" onkeypress="handleClick(event,'hopOutput')"\>
-      <div class="label"\>homology class:</div>
+      <div class="label"\>cutting sequence:</div>
       <input id = 'homologyOutput' type = "text" class="textBox" value = "" onkeypress="handleClick(event,'homologyOutput')"\>
       <!-- <input type="checkbox" id="myCheck" onclick="myFunction()"> -->
     </div>
@@ -105,9 +105,12 @@ var domain = {
 
 
 
-console.log('---')
-console.log(domain.allCircles)
-console.log('---')
+// console.log('---')
+// console.log(domain.allCircles)
+// console.log('---')
+
+// ctx.clearRect(0, 0, canvas.width, canvas.height);
+
 
 function makeGraph(domain){
   var x0 = 0;
@@ -131,6 +134,7 @@ function makeGraph(domain){
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  hopOutputBox.style = ""
 
   while (x0 * d <= domain.endPoint[0] && y0 * d <= domain.endPoint[1] && boxCount < 200){
     boxCount += 1
@@ -162,10 +166,11 @@ function makeGraph(domain){
       ctx.fill();
       ctx.stroke();
       tracking = false;
-      domain.allCircles.push([x0,y0])
-      domain.allCircles = domain.allCircles.filter(( t={}, a=> !(t[a]=a in t) ))
+      // hopOutputBox.style."text-decoration" = "overline"
+      hopOutputBox.style = "text-decoration-line: overline"
+      // domain.allCircles.push([x0,y0])
+      // domain.allCircles = domain.allCircles.filter(( t={}, a=> !(t[a]=a in t) ))
     }
-    
     
     if (tracking){
       hoppingSequence += boxType.toString()
@@ -204,15 +209,15 @@ function makeGraph(domain){
   homologyOutputBox.value = '(' + homologyClass.toString() + ')  =>  ' + homologyString;
   
 
-  for (circle of domain.allCircles) {
-    console.log('here')
-        ctx.beginPath();
-        ctx.arc(circle[0] * d, domain.canvasHeight - circle[1] * d, 5, 0, 2 * Math.PI);
-        ctx.fillStyle = "rgba(255, 255, 255,1)";
-        ctx.strokeStyle = "rgba(0,0,0,0.5)";
-        ctx.fill();
-        ctx.stroke();
-    }
+  // for (circle of domain.allCircles) {
+  //   console.log('here')
+  //       ctx.beginPath();
+  //       ctx.arc(circle[0] * d, domain.canvasHeight - circle[1] * d, 5, 0, 2 * Math.PI);
+  //       ctx.fillStyle = "rgba(255, 255, 255,1)";
+  //       ctx.strokeStyle = "rgba(0,0,0,0.5)";
+  //       ctx.fill();
+  //       ctx.stroke();
+  //   }
 }
 
 
