@@ -18,7 +18,7 @@
 #sidebar {
   right: 0%;
   top:0%;
-  margin: 100px 100px;
+  margin: 20px 100px;
   position:absolute;
   display: flex;
   flex-direction:column;
@@ -70,7 +70,10 @@
         <canvas id="canvas" width="850" height="700" style="border:1px solid steelblue;" onclick="activate()"></canvas> <!-- 650 -->
     </div>
     <div id = "sidebar">
-      <div class="label"\>dimple(x, y):</div>
+      <div class="label"\>A foliation generator dimple surfaces.</div>
+      <div class="label"\></div>
+      <!-- <input id = 'dimpleOutput' type = "text" class="textBox" value = "2, 1" onkeypress="handleClick(event,'dimpleOutput')"\> -->
+      <div class="label"\>dimple(a, b):</div>
       <input id = 'dimpleOutput' type = "text" class="textBox" value = "2, 1" onkeypress="handleClick(event,'dimpleOutput')"\>
       <div class="label"\>trajectory vector:</div>
       <input id = 'stepOutput' type = "text" class="textBox" value = "" onkeypress="handleClick(event,'stepOutput')"\>
