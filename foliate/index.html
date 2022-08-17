@@ -3,6 +3,7 @@
 
 <head>
 <title>Foliation of D(x, y)</title>
+
 </head>
 
 <style>
@@ -79,6 +80,7 @@
       <input id = 'hopOutput' type = "text" class="textBox" value = "" onkeypress="handleClick(event,'hopOutput')"\>
       <div class="label"\>homology class:</div>
       <input id = 'homologyOutput' type = "text" class="textBox" value = "" onkeypress="handleClick(event,'homologyOutput')"\>
+      <!-- <input type="checkbox" id="myCheck" onclick="myFunction()"> -->
     </div>
 </body>
 
@@ -86,8 +88,9 @@
 
 
 
-
 var colorList = ['#9FC5E8','#FFE599','#B4A7D6','#FFC4C4']
+
+
 
 var domain = {
     canvasWidth : canvas.width,
@@ -96,8 +99,15 @@ var domain = {
     initialBoxType : 0,
     initialBoxDim: [2,1],
     d: 20,
-    active: true
+    active: true,
+    allCircles : []
 }
+
+
+
+console.log('---')
+console.log(domain.allCircles)
+console.log('---')
 
 function makeGraph(domain){
   var x0 = 0;
@@ -116,20 +126,22 @@ function makeGraph(domain){
   var hoppingSequence = ''
   var homologyString = '';
   var homologyClass = [0,0];
-  var scaleFactor = domain.initialBoxDim[0] / domain.initialBoxDim[1]
+  var scaleFactor = domain.initialBoxDim[0] / domain.initialBoxDim[1];
+  var tracking = true;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
 
   while (x0 * d <= domain.endPoint[0] && y0 * d <= domain.endPoint[1] && boxCount < 200){
     boxCount += 1
     var dy = scale * domain.initialBoxDim[1]
     var dx = scale * domain.initialBoxDim[+!!boxType]
     var boxWidth = d * dx - 1;
-    var boxHeight = d * dy * -1 + 1;
+    var boxHeight = d * dy * (-1) + 1;
     var y1 = y0 + dy;
     var x1 = x0 + dx;
-    var nearness = Math.abs(y0 - m1 * x0);
-    var repeat = (boxType == domain.initialBoxType);
+    var near = Math.abs(y0 - m1 * x0) < .05;
+    var closed = (boxType == domain.initialBoxType);
 
     ctx.fillStyle = colorList[boxType];
     ctx.fillRect(x0 * d, domain.canvasHeight - y0 * d, boxWidth, boxHeight);
@@ -140,7 +152,8 @@ function makeGraph(domain){
     ctx.lineTo(domain.endPoint[0], domain.canvasHeight - domain.endPoint[1]);
     ctx.stroke();
 
-    if (repeat && nearness < .05 && y0){
+    
+    if (closed && near && tracking && y0){
       hoppingSequence += ',';
       ctx.beginPath();
       ctx.arc(x0 * d, domain.canvasHeight - y0 * d, 10, 0, 2 * Math.PI);
@@ -148,9 +161,16 @@ function makeGraph(domain){
       ctx.strokeStyle = "rgba(0,0,0,1)";
       ctx.fill();
       ctx.stroke();
+      tracking = false;
+      domain.allCircles.push([x0,y0])
+      domain.allCircles = domain.allCircles.filter(( t={}, a=> !(t[a]=a in t) ))
+    }
+    
+    
+    if (tracking){
+      hoppingSequence += boxType.toString()
     }
 
-    hoppingSequence += boxType.toString()
     if (m1 > y1/x1){
       if (boxType == 0){scale *= scaleFactor}
       else if (boxType == 3) {scale /= scaleFactor;}
@@ -163,12 +183,14 @@ function makeGraph(domain){
     }
   }
 
+  
+  
   stepOutputBox.value = (domain.endPoint[0]/d).toString() + ', '+ (domain.endPoint[1]/d).toString()
   slopeOutputBox.value = (domain.endPoint[1]/domain.endPoint[0]).toString()
   hopOutputBox.value = hoppingSequence
+  
 
-
-  var noComma = hoppingSequence.replace(/,/g,'')
+  var noComma = hoppingSequence.replace(/,/g,'0')
   for (let i = 1; i < noComma.length; i++) {
     var pair = noComma[i-1] + noComma[i];
     if (['10','23'].includes(pair)){
@@ -179,9 +201,22 @@ function makeGraph(domain){
       homologyString += 'B'
     }
   }
-
   homologyOutputBox.value = '(' + homologyClass.toString() + ')  =>  ' + homologyString;
+  
+
+  for (circle of domain.allCircles) {
+    console.log('here')
+        ctx.beginPath();
+        ctx.arc(circle[0] * d, domain.canvasHeight - circle[1] * d, 5, 0, 2 * Math.PI);
+        ctx.fillStyle = "rgba(255, 255, 255,1)";
+        ctx.strokeStyle = "rgba(0,0,0,0.5)";
+        ctx.fill();
+        ctx.stroke();
+    }
 }
+
+
+
 
 
 canvas.addEventListener("mousemove",function(e){
@@ -205,30 +240,30 @@ function handleClick(e,buttonId){
   if(e.keyCode === 13) {
     var input = document.getElementById(buttonId).value;
     if (typeof eval(input) === "number"){
-
       if (buttonId == 'stepOutput'){
           val = input.replace(' ','').split(',')
           domain.endPoint = [eval(val[0]) * domain.d, eval(val[1]) * domain.d]
       }
-      
       else if (buttonId == 'slopeOutput'){
           input = eval(input)
-          var target = Math.ceil((domain.canvasWidth ) / domain.d) * domain.d
+          // var target = Math.ceil((domain.canvasWidth ) / domain.d) * domain.d
           if (input > domain.canvasHeight/domain.canvasWidth){
             domain.endPoint = [domain.canvasHeight / input, domain.canvasHeight]
           } else {
             domain.endPoint = [domain.canvasWidth, domain.canvasWidth * input]
           }
       }
-      
       else if (buttonId == 'dimpleOutput'){
           domain.initialBoxDim = input.replace(' ','').split(',')
       }
-
-
       makeGraph(domain);
       domain.active = false;
     }
   }
 }
+
+
+
+
+
 </script>
