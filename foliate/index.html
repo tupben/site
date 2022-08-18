@@ -55,13 +55,18 @@
   background-color: transparent;
   border: RGB(230,230,230) 2px solid;
   padding: 0 20px;
-  margin: 0 0 40px 0;
+  margin: 0 0 30px 0;
   font-family: "Times New Roman", Times, serif;  
 }
 
 .textBox:hover {
   cursor: text;
 }
+#title {
+  font-size: 30px;
+  margin:  0 0 30px 0;
+}
+
 
 </style>
 
@@ -70,16 +75,15 @@
         <canvas id="canvas" width="850" height="700" style="border:1px solid steelblue;" onclick="activate()"></canvas> <!-- 650 -->
     </div>
     <div id = "sidebar">
-      <div class="label"\>A foliation generator for dimple surfaces.</div>
+      <div class="label" id="title"\>Foliation generator for dimple surfaces.</div>
       <div class="label"\></div>
-      <!-- <input id = 'dimpleOutput' type = "text" class="textBox" value = "2, 1" onkeypress="handleClick(event,'dimpleOutput')"\> -->
       <div class="label"\>dimple(a, b):</div>
       <input id = 'dimpleOutput' type = "text" class="textBox" value = "2, 1" onkeypress="handleClick(event,'dimpleOutput')"\>
       <div class="label"\>trajectory vector:</div>
       <input id = 'stepOutput' type = "text" class="textBox" value = "" onkeypress="handleClick(event,'stepOutput')"\>
       <div class="label"\>slope:</div>
       <input id = 'slopeOutput' type = "text" class="textBox" value = "" onkeypress="handleClick(event,'slopeOutput')"\>
-      <div class="label"\>"hopping" sequence:</div>
+      <div class="label"\>'hopping' sequence:</div>
       <input id = 'hopOutput' type = "text" class="textBox" value = "" onkeypress="handleClick(event,'hopOutput')"\>
       <div class="label"\>cutting sequence:</div>
       <input id = 'homologyOutput' type = "text" class="textBox" value = "" onkeypress="handleClick(event,'homologyOutput')"\>
