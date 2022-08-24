@@ -87,6 +87,10 @@
   cursor: pointer;
 }
 
+/* #canvas{
+    
+} */
+
 </style>
 
 <body>
@@ -178,10 +182,14 @@ function h(x,m){
 function makeGraph(){
     var slope = 1 / document.getElementById("trajSlider").value
     var z = document.getElementById("startSlider").value
-    var width = canvas.width
-    var height = canvas.height
+    var width = window.innerWidth / 2.22;
+    var height = window.innerWidth / 2.22;
     var c = document.getElementById("canvas");
     var ctx = c.getContext("2d");
+    var cont = document.getElementById("container");
+
+    c.width = window.innerWidth / 2.22;
+    c.height = window.innerWidth / 2.22;
 
     ctx.clearRect(0, 0, width, height);
     ctx.fillStyle = "#000000";
