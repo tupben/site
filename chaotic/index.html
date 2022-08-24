@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<meta name=viewport content="width=device-width, initial-scale=1" charset="utf-8">
+
+<head>
+<title>Trajectory</title>
+</head>
+
+<style>
+#container {
+  display: flex;
+  flex-direction: row;
+}
+
+#sidebar {
+  right: 0%;
+  bottom: -160px;
+  margin: 100px 0px;
+  position:absolute;
+  display: flex;
+  flex-direction:column;
+}
+
+.label {
+  height: 40px;
+  width: 500px;
+  font-size: 24px;
+  cursor: default;
+  background-color: transparent;
+  font-family: "Times New Roman", Times, serif;
+}
+
+.slidecontainer {
+    width: 50%;
+}
+
+.slider {
+    width: 100%;
+    background: #04AA6D;
+}
+
+#startSlider{
+    height: 0;
+
+}
+
+.textBox{
+    font-size: 30px;
+    margin-bottom: 80px;
+    margin-left: 10px;
+}
+
+
+.startSlideContainer{
+    margin-left: 207px;
+    margin-top: -15px;
+    width: 674px;
+}
+
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 15px;
+  border-radius: 5px;  
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%; 
+  background: blue;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: blue;
+  cursor: pointer;
+}
+
+</style>
+
+<body>
+    <div id="container" style="margin-left: 220px;">
+        <canvas id="canvas" width="650" height="650" style="border:1px solid steelblue;"></canvas>
+    
+    </div>
+        <div class="startSlideContainer">
+        <input type="range" min="0" max="1" step = 0.01 class="slider" id="startSlider">
+        <p class = "textBox">start: <span id="startField" value = "0"></span></p>
+    </div>
+
+    <div id = "sidebar">
+        <div class="slidecontainer">
+            <input type="range" min="0" max="6" step = 0.01 class="slider" id="trajSlider">
+        </div>
+            <p class = "textBox">trajectory: ( <span id="trajectoryField"></span>, 1 )</p>
+            <div class="label"></div>
+    </div>
+
+</body>
+
+
+
+
+
+<script>
+    var trajSlider = document.getElementById("trajSlider");
+    var startSlider = document.getElementById("startSlider");
+    var trajOutput = document.getElementById("trajectoryField");
+    var startOutput = document.getElementById("startField");
+    trajSlider.value = 2;
+    startSlider.value = 0;
+    trajOutput.innerHTML = trajSlider.value;
+    startOutput.innerHTML = startSlider.value;
+    makeGraph(1 / trajSlider.value)
+
+
+trajSlider.oninput = function() {
+    trajOutput.innerHTML = this.value;
+    makeGraph();
+}
+
+startSlider.oninput = function() {
+    startOutput.innerHTML = this.value;
+    makeGraph();
+}
+
+
+canvas.addEventListener("mousemove",function(e){
+  var thisText = document.getElementById("coordinatesField");
+  var rect = e.target.getBoundingClientRect();
+  var x = (e.clientX - rect.left) / canvas.width;
+  var y = 1 - (e.clientY - rect.top) / canvas.height;
+  console.log(Math.round(x * 100) / 100 + ', ' +  (Math.round(y * 100) / 100))
+//   thisText.innerHTML = Math.round(x * 100) / 100 + ', ' +  (Math.round(y * 100) / 100)
+})
+
+
+
+function f(x){
+    x = x % 1
+    if (x < 1/2){
+        return 4 * x
+    } else {
+        return x * 2 + 1
+    }
+}
+
+function g(x){
+    x = x % 3
+    if (x < 2){
+        return x / 2;
+    } else {
+        return x - 1;
+    }
+}
+
+function h(x,m){
+    if (m == 0){  return x  };
+    var a = f(x);
+    var b = (a + 1/m) % 3;
+    var c = (g(b) + 1/m) % 2;
+    return c / 2;
+    // return ((c / 2) - x+1) % 1;
+}
+
+
+function makeGraph(){
+    var slope = 1 / document.getElementById("trajSlider").value
+    var z = document.getElementById("startSlider").value
+    var width = canvas.width
+    var height = canvas.height
+    var c = document.getElementById("canvas");
+    var ctx = c.getContext("2d");
+
+    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = "#000000";
+
+    ctx.strokeStyle = 'lightblue';
+    ctx.beginPath();
+    ctx.moveTo(0, height);
+    ctx.lineTo(width, 0);
+    ctx.stroke(); 
+
+    ctx.beginPath();
+    ctx.moveTo(0, height/2);
+    ctx.lineTo(width, height/2);
+    ctx.stroke(); 
+
+    ctx.beginPath();
+    ctx.moveTo(width/2, 0);
+    ctx.lineTo(width/2, height);
+    ctx.stroke();
+    
+    function a(x){
+        return width * x
+    }
+    function b(y){
+        return height * (1 - y)
+    }
+
+    ctx.strokeStyle = 'red';
+    ctx.beginPath();
+    ctx.moveTo(a(z), b(h(z,slope)));
+    for (i = 0; i < 1000; i += 1){
+        ctx.lineTo( a(z), b(h(z,slope)));
+        ctx.lineTo( a(h(z,slope)), b(h(z,slope)));
+        z = h(z, slope)
+    }
+    ctx.stroke(); 
+
+    for (x = 0; x < 1; x += 1 / width){
+        ctx.beginPath();
+        ctx.arc(width * x, height * (1 - h(x,slope)), 2, 0, 2 * Math.PI);
+        ctx.fill();
+    }
+
+
+
+}
+
+</script>
