@@ -105,7 +105,7 @@ var domain = {
     endPoint : [0,0],
     initialBoxType : 0,
     initialBoxDim: [2,1],
-    d: 40,
+    d: 20,
     active: true,
     allCircles : []
 }
@@ -120,6 +120,14 @@ var domain = {
 
 
 function makeGraph(domain){
+  var stepOutputBox = document.getElementById("stepOutput")
+  var slopeOutputBox = document.getElementById("slopeOutput")
+  var hopOutputBox = document.getElementById("hopOutput")
+  var homologyOutputBox = document.getElementById("homologyOutput")
+  var c = document.getElementById("canvas");
+  var ctx = c.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
   var x0 = 0;
   var y0 = 0;
   var m1 = domain.endPoint[1]/domain.endPoint[0]
@@ -127,21 +135,14 @@ function makeGraph(domain){
   var scale = 1;
   var boxCount = 0;
   var d = domain.d
-  var stepOutputBox = document.getElementById("stepOutput")
-  var slopeOutputBox = document.getElementById("slopeOutput")
-  var hopOutputBox = document.getElementById("hopOutput")
-  var homologyOutputBox = document.getElementById("homologyOutput")
-  var c = document.getElementById("canvas");
-  var ctx = c.getContext("2d");
   var hoppingSequence = ''
   var homologyString = '';
   var homologyClass = [0,0];
   var scaleFactor = domain.initialBoxDim[0] / domain.initialBoxDim[1];
   var tracking = true;
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  hopOutputBox.style = ""
+  // hopOutputBox.style = ""
 
   while (x0 * d <= domain.endPoint[0] && y0 * d <= domain.endPoint[1] && boxCount < 200){
     boxCount += 1
@@ -173,7 +174,6 @@ function makeGraph(domain){
       ctx.fill();
       ctx.stroke();
       tracking = false;
-      // hopOutputBox.style."text-decoration" = "overline"
       hopOutputBox.style = "text-decoration-line: overline"
       // domain.allCircles.push([x0,y0])
       // domain.allCircles = domain.allCircles.filter(( t={}, a=> !(t[a]=a in t) ))
@@ -205,11 +205,20 @@ function makeGraph(domain){
   var noComma = hoppingSequence.replace(/,/g,'0')
   for (let i = 1; i < noComma.length; i++) {
     var pair = noComma[i-1] + noComma[i];
-    if (['10','23'].includes(pair)){
-      homologyClass[0] += 1;
-      homologyString += 'A'
-    } else if (['30','21'].includes(pair)){
+
+    // if (['10','23'].includes(pair)){
+    //   homologyClass[0] += 1;
+    //   homologyString += 'B'
+    // } else if (['30','21'].includes(pair)){
+    //   homologyClass[1] += 1;
+    //   homologyString += 'A'
+    // }
+
+    if (['30','21'].includes(pair)){
       homologyClass[1] += 1;
+      homologyString += 'A'
+    } else if (['10','23'].includes(pair)){
+      homologyClass[0] += 1;
       homologyString += 'B'
     }
   }

@@ -33,10 +33,7 @@
     width: 50%;
 }
 
-.slider {
-    width: 100%;
-    background: #04AA6D;
-}
+
 
 #startSlider{
     height: 0;
@@ -182,14 +179,10 @@ function h(x,m){
 function makeGraph(){
     var slope = 1 / document.getElementById("trajSlider").value
     var z = document.getElementById("startSlider").value
-    var width = window.innerWidth / 2.22;
-    var height = window.innerWidth / 2.22;
+    var width = 650;
+    var height = 650;
     var c = document.getElementById("canvas");
     var ctx = c.getContext("2d");
-    var cont = document.getElementById("container");
-
-    c.width = window.innerWidth / 2.22;
-    c.height = window.innerWidth / 2.22;
 
     ctx.clearRect(0, 0, width, height);
     ctx.fillStyle = "#000000";
