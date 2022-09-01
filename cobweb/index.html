@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<meta name=viewport content="width=device-width, initial-scale=1" charset="utf-8">
+<meta name=viewport content="width=device-width, initial-domain=1" charset="utf-8">
 
 <head>
-<title>Trajectory</title>
+<title>Graph</title>
 </head>
 
 <style>
@@ -13,14 +13,11 @@
 
 #sidebar {
   right: 0%;
-  bottom: -160px;
+  top: 0px;
   margin: 100px 0px;
   position:absolute;
   display: flex;
   flex-direction:column;
-}
-
-.label {
   height: 40px;
   width: 500px;
   font-size: 24px;
@@ -29,30 +26,35 @@
   font-family: "Times New Roman", Times, serif;
 }
 
-.slidecontainer {
+
+#domainSlider {
     width: 50%;
+    margin-left: -1px;
+}
+
+#newFunction{
+    margin-top: 14px;
 }
 
 
-
-#startSlider{
-    height: 0;
-
-}
-
-.textBox{
-    font-size: 30px;
-    margin-bottom: 80px;
-    margin-left: 10px;
-}
-
-
-.startSlideContainer{
+.startContainer{
     margin-left: 207px;
     margin-top: -15px;
     width: 674px;
 }
 
+#startSlider{
+    height: 0;
+}
+
+#sidebar{
+    margin-top: -20px;
+}
+
+input{
+    width: 50%;
+    font-size: 20px;
+}
 
 .slider {
   -webkit-appearance: none;
@@ -84,28 +86,33 @@
   cursor: pointer;
 }
 
-/* #canvas{
-    
-} */
+
 
 </style>
 
 <body>
     <div id="container" style="margin-left: 220px;">
         <canvas id="canvas" width="650" height="650" style="border:1px solid steelblue;"></canvas>
-    
     </div>
-        <div class="startSlideContainer">
-        <input type="range" min="0" max="1" step = 0.01 class="slider" id="startSlider">
-        <p class = "textBox">start: <span id="startField" value = "0"></span></p>
+    <div class="startContainer">
+        <input type="range" value = "0" step = 0.01 class="slider" id="startSlider">
     </div>
 
     <div id = "sidebar">
-        <div class="slidecontainer">
-            <input type="range" min="0" max="6" step = 0.01 class="slider" id="trajSlider">
+        <div class="textBox"\><h3><u>Cobweb Plot</u></h3></div>
+        <div class="textBox"\>Function:</div>
+        
+        <input id = 'newFunction' type = "text" value = "Math.cos(x)" onkeypress="handleClick(event,'newFunction')"\>
+        <p style="margin-bottom:1.8cm;"\>
+
+            <p class = "textBox">x<sub>0</sub> =  <span id="startField" value = "0"></span></p>
+            <p style="margin-bottom:1cm;"\>
+            
+        <div id="domainContainer">
+            <p class = "textBox">Domain: <span id="domainField"></span><sup>2</sup></p>
+            <input type="range" min="-1" max="6" step = "1" value="1" class="slider" id="domainSlider">
         </div>
-            <p class = "textBox">trajectory: ( <span id="trajectoryField"></span>, 1 )</p>
-            <div class="label"></div>
+
     </div>
 
 </body>
@@ -115,19 +122,20 @@
 
 
 <script>
-    var trajSlider = document.getElementById("trajSlider");
+    var domainSlider = document.getElementById("domainSlider");
     var startSlider = document.getElementById("startSlider");
-    var trajOutput = document.getElementById("trajectoryField");
+    var domainOutput = document.getElementById("domainField");
     var startOutput = document.getElementById("startField");
-    trajSlider.value = 2;
-    startSlider.value = 0;
-    trajOutput.innerHTML = trajSlider.value;
+    var s = 'Math.cos(x)'
+    domainOutput.innerHTML = "[-" + 2 ** (+domainSlider.value) + ", " + 2 ** (+domainSlider.value) + "]";
     startOutput.innerHTML = startSlider.value;
-    makeGraph(1 / trajSlider.value)
+    function h(x){    return eval(s)    }
+    makeGraph()
 
 
-trajSlider.oninput = function() {
-    trajOutput.innerHTML = this.value;
+domainSlider.oninput = function() {
+    domainOutput.innerHTML = 2 ** this.value;
+    domainOutput.innerHTML = "[-" + 2 ** (+this.value) + ", " + 2 ** (+this.value) + "]";
     makeGraph();
 }
 
@@ -143,47 +151,28 @@ canvas.addEventListener("mousemove",function(e){
   var x = (e.clientX - rect.left) / canvas.width;
   var y = 1 - (e.clientY - rect.top) / canvas.height;
   console.log(Math.round(x * 100) / 100 + ', ' +  (Math.round(y * 100) / 100))
-//   thisText.innerHTML = Math.round(x * 100) / 100 + ', ' +  (Math.round(y * 100) / 100)
 })
 
 
 
-function f(x){
-    x = x % 1
-    if (x < 1/2){
-        return 4 * x
-    } else {
-        return x * 2 + 1
-    }
-}
-
-function g(x){
-    x = x % 3
-    if (x < 2){
-        return x / 2;
-    } else {
-        return x - 1;
-    }
-}
-
-function h(x,m){
-    if (m == 0){  return x  };
-    var a = f(x);
-    var b = (a + 1/m) % 3;
-    var c = (g(b) + 1/m) % 2;
-    return c / 2;
-    // return x - x**2 ;
-}
-
 
 
 function makeGraph(){
-    var slope = 1 / document.getElementById("trajSlider").value
     var z = document.getElementById("startSlider").value
     var width = 650;
     var height = 650;
+    var domain = 2**(+domainSlider.value);
     var c = document.getElementById("canvas");
     var ctx = c.getContext("2d");
+    startSlider.min = -1 * domain;
+    startSlider.max = domain;
+
+    function a(x){
+        return width * ( +x + domain) / (2 * domain)
+    }
+    function b(y){
+        return height - height * ( +y + domain) / (2 * domain)
+    }
 
     ctx.clearRect(0, 0, width, height);
     ctx.fillStyle = "#000000";
@@ -204,31 +193,33 @@ function makeGraph(){
     ctx.lineTo(width/2, height);
     ctx.stroke();
     
-    function a(x){
-        return width * x
-    }
-    function b(y){
-        return height * (1 - y)
-    }
+
 
     ctx.strokeStyle = 'red';
     ctx.beginPath();
-    ctx.moveTo(a(z), b(h(z,slope)));
-    for (i = 0; i < 1000; i += 1){
-        ctx.lineTo( a(z), b(h(z,slope)));
-        ctx.lineTo( a(h(z,slope)), b(h(z,slope)));
-        z = h(z, slope)
+    ctx.moveTo(a(z), b(-1 * domain));
+
+    for (i = 0; i < 1000 && Math.abs(h(z)) < domain; i += 1){
+        ctx.lineTo( a(z), b(h(z)));
+        ctx.lineTo( a(h(z)), b(h(z)));
+        z = h(z)
     }
     ctx.stroke(); 
 
-    for (x = 0; x < 1; x += 1 / width){
+    for (x = -1 * domain; x < domain; x += 1 / width){
         ctx.beginPath();
-        ctx.arc(width * x, height * (1 - h(x,slope)), 2, 0, 2 * Math.PI);
+        ctx.arc(a(x), b(h(x)), 1, 0, 2 * Math.PI);
         ctx.fill();
     }
+}
 
 
 
+function handleClick(e,buttonId){
+  if(e.keyCode === 13) {
+    s = document.getElementById(buttonId).value;
+    makeGraph();
+  }
 }
 
 </script>
