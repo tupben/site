@@ -102,7 +102,7 @@ input{
         <div class="textBox"\><h3><u>Cobweb Plot</u></h3></div>
         <div class="textBox"\>Function:</div>
         
-        <input id = 'newFunction' type = "text" value = "Math.cos(x)" onkeypress="handleClick(event,'newFunction')"\>
+        <input id = 'newFunction' type = "text" value = "x**2 + 1/8" onkeypress="handleClick(event,'newFunction')"\>
         <p style="margin-bottom:1.8cm;"\>
 
             <p class = "textBox">x<sub>0</sub> =  <span id="startField" value = "0"></span></p>
@@ -126,7 +126,7 @@ input{
     var startSlider = document.getElementById("startSlider");
     var domainOutput = document.getElementById("domainField");
     var startOutput = document.getElementById("startField");
-    var s = 'Math.cos(x)'
+    var s = 'x**2 + 1/8'
     domainOutput.innerHTML = "[-" + 2 ** (+domainSlider.value) + ", " + 2 ** (+domainSlider.value) + "]";
     startOutput.innerHTML = startSlider.value;
     function h(x){    return eval(s)    }
