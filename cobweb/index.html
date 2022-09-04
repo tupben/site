@@ -129,7 +129,7 @@ input{
     var s = 'x**2 + 1/8'
     domainOutput.innerHTML = "[-" + 2 ** (+domainSlider.value) + ", " + 2 ** (+domainSlider.value) + "]";
     startOutput.innerHTML = startSlider.value;
-    function h(x){    return eval(s)    }
+    function h(x){    return eval(s.replace(/x/g, '(+x)'))    }
     makeGraph()
 
 
@@ -208,7 +208,7 @@ function makeGraph(){
 
     for (x = -1 * domain; x < domain; x += 1 / width){
         ctx.beginPath();
-        ctx.arc(a(x), b(h(x)), 1, 0, 2 * Math.PI);
+        ctx.arc(a(x), b(+h(x)), 1, 0, 2 * Math.PI);
         ctx.fill();
     }
 }
