@@ -26,8 +26,12 @@
   font-family: "Times New Roman", Times, serif;
 }
 
+#parameterSlider{
+    width: 50%;
+    margin-left: -1px;
+}
 
-#domainSlider {
+#domainSlider{
     width: 50%;
     margin-left: -1px;
 }
@@ -102,16 +106,22 @@ input{
         <div class="textBox"\><h3><u>Cobweb Plot</u></h3></div>
         <div class="textBox"\>Function:</div>
         
-        <input id = 'newFunction' type = "text" value = "x**2 + 1/8" onkeypress="handleClick(event,'newFunction')"\>
+        <input id = 'newFunction' type = "text" value = "t*x*(1-x)" onkeypress="handleClick(event,'newFunction')"\>
         <p style="margin-bottom:1.8cm;"\>
 
             <p class = "textBox">x<sub>0</sub> =  <span id="startField" value = "0"></span></p>
             <p style="margin-bottom:1cm;"\>
-            
+                
+        <div id="parameterContainer">
+            <p class = "textBox">Parameter: <span id="parameterField"></span></p>
+            <input type="range" min="-10" max="10" step = ".1" value="1" class="slider side-slider" id="parameterSlider">
+        </div>
+
         <div id="domainContainer">
             <p class = "textBox">Domain: <span id="domainField"></span></p>
-            <input type="range" min="-1" max="6" step = "1" value="1" class="slider" id="domainSlider">
+            <input  type="range" min="-1" max="6" step = "1" value="1" class="slider side-slider" id="domainSlider">
         </div>
+
 
     </div>
 
@@ -123,19 +133,28 @@ input{
 
 <script>
     var domainSlider = document.getElementById("domainSlider");
+    var parameterSlider = document.getElementById("parameterSlider");
     var startSlider = document.getElementById("startSlider");
     var domainOutput = document.getElementById("domainField");
+    var parameterOutput = document.getElementById("parameterField");
     var startOutput = document.getElementById("startField");
-    var s = 'x**2 + 1/8'
+    var s = 't*x*(1-x)'
+    var t = +parameterSlider.value;
     domainOutput.innerHTML = "[-" + 2 ** (+domainSlider.value) + ", " + 2 ** (+domainSlider.value) + "]";
+    parameterOutput.innerHTML = +parameterSlider.value;
     startOutput.innerHTML = startSlider.value;
-    function h(x){    return eval(s.replace(/x/g, '(+x)'))    }
+    function h(x){    return eval(s.replace(/x/g, '(+x)').replace(/t/g, '(+t)'))    }
     makeGraph()
 
 
 domainSlider.oninput = function() {
-    domainOutput.innerHTML = 2 ** this.value;
     domainOutput.innerHTML = "[-" + 2 ** (+this.value) + ", " + 2 ** (+this.value) + "]";
+    makeGraph();
+}
+
+parameterSlider.oninput = function() {
+    parameterOutput.innerHTML = +this.value;
+    t = +this.value;
     makeGraph();
 }
 
