@@ -107,21 +107,22 @@ input{
         <div class="textBox"\>Function:</div>
         
         <input id = 'newFunction' type = "text" value = "t*x*(1-x)" onkeypress="handleClick(event,'newFunction')"\>
-        <p style="margin-bottom:1.8cm;"\>
-
-            <p class = "textBox">x<sub>0</sub> =  <span id="startField" value = "0"></span></p>
-            <p style="margin-bottom:1cm;"\>
-                
-        <div id="parameterContainer">
-            <p class = "textBox">Parameter: <span id="parameterField"></span></p>
-            <input type="range" min="-10" max="10" step = ".1" value="1" class="slider side-slider" id="parameterSlider">
-        </div>
-
-        <div id="domainContainer">
-            <p class = "textBox">Domain: <span id="domainField"></span></p>
-            <input  type="range" min="-1" max="6" step = "1" value="1" class="slider side-slider" id="domainSlider">
-        </div>
-
+        
+        <p style="margin-bottom:.3cm;"\>
+            
+            <div id="parameterContainer">
+                <p class = "textBox">Parameter: t = <span id="parameterField"></span></p>
+                <input type="range" min="-10" max="10" step = ".1" value="1" class="slider side-slider" id="parameterSlider">
+            </div>
+            
+            <div id="domainContainer">
+                <p class = "textBox">Domain: <span id="domainField"></span></p>
+                <input  type="range" min="-1" max="6" step = "1" value="1" class="slider side-slider" id="domainSlider">
+            </div>
+            
+            <p style="margin-bottom: 5.4cm;"\>
+    
+                <p class = "textBox">x<sub>0</sub> =  <span id="startField" value = "0"></span></p>
 
     </div>
 
