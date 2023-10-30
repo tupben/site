@@ -4,9 +4,6 @@
     <title>Complex Number Graph</title>
 </head>
 <body>
-    
-    <!-- <p>Value of r: <span id="current-r">5</span></p> -->
-    
     <style>
         /* Center the canvas element both horizontally and vertically */
         #canvasContainer {
@@ -26,13 +23,13 @@
         }
 
         .slider-container {
-            margin-top: 40px;
+            margin-top: 20px; /* Adjust the top margin */
             margin-left: 40px;
             margin-bottom: 20px;
         }
         
         #r-slider {
-            margin-bottom: 40px;
+            margin-bottom: 0;
         }
 
         #r-value {
@@ -46,7 +43,6 @@
             width: 400px;
             text-align: left;
         }
-
     </style>
 
     <div id="canvasContainer">
@@ -54,6 +50,9 @@
     </div>
 
     <div class="all-sliders">
+        <div class="info">
+            <p>Evaluate the polynomial az^3 + bz^2 + cz + d at the circle |z| = R</p>
+        </div>
         <div class="slider-container">
             <label for="R">R:</label>
             <input type="range" id="r-slider" min="0" max="5" step="0.1" value="1">
