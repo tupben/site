@@ -84,9 +84,6 @@
   cursor: pointer;
 }
 
-/* #canvas{
-    
-} */
 
 </style>
 
@@ -142,38 +139,20 @@ canvas.addEventListener("mousemove",function(e){
   var rect = e.target.getBoundingClientRect();
   var x = (e.clientX - rect.left) / canvas.width;
   var y = 1 - (e.clientY - rect.top) / canvas.height;
-  console.log(Math.round(x * 100) / 100 + ', ' +  (Math.round(y * 100) / 100))
-//   thisText.innerHTML = Math.round(x * 100) / 100 + ', ' +  (Math.round(y * 100) / 100)
 })
 
 
 
-function f(x){
-    x = x % 1
-    if (x < 1/2){
-        return 4 * x
-    } else {
-        return x * 2 + 1
-    }
+
+function next(x,m){
+    if (m == 0) {  return x  };
+    var a = (2 * x + 1 / m) % 2;
+    var b = a < 1 ? 2 * a : a + 1
+    var c = (b + 1 / m) % 3;
+    var d = c < 2 ? c / 4 : (c - 1) / 2
+    return d
 }
 
-function g(x){
-    x = x % 3
-    if (x < 2){
-        return x / 2;
-    } else {
-        return x - 1;
-    }
-}
-
-function h(x,m){
-    if (m == 0){  return x  };
-    var a = f(x);
-    var b = (a + 1/m) % 3;
-    var c = (g(b) + 1/m) % 2;
-    return c / 2;
-    // return x - x**2 ;
-}
 
 
 
@@ -213,17 +192,19 @@ function makeGraph(){
 
     ctx.strokeStyle = 'red';
     ctx.beginPath();
-    ctx.moveTo(a(z), b(h(z,slope)));
+    ctx.moveTo(a(z), b(next(z,slope)));
     for (i = 0; i < 1000; i += 1){
-        ctx.lineTo( a(z), b(h(z,slope)));
-        ctx.lineTo( a(h(z,slope)), b(h(z,slope)));
-        z = h(z, slope)
+        ctx.lineTo( a(z), b(next(z,slope)));
+        ctx.lineTo( a(next(z,slope)), b(next(z,slope)));
+        z = next(z, slope)
+        console.log(Math.round(z*100)/100)
+
     }
     ctx.stroke(); 
 
     for (x = 0; x < 1; x += 1 / width){
         ctx.beginPath();
-        ctx.arc(width * x, height * (1 - h(x,slope)), 2, 0, 2 * Math.PI);
+        ctx.arc(a(x), b(next(x,slope)), 2, 0, 2 * Math.PI);
         ctx.fill();
     }
 

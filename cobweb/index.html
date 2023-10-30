@@ -145,6 +145,8 @@ input{
     parameterOutput.innerHTML = +parameterSlider.value;
     startOutput.innerHTML = startSlider.value;
     function h(x){    return eval(s.replace(/x/g, '(+x)').replace(/t/g, '(+t)'))    }
+    function g(x){return eval(2*x*(x<1/2) + 2*(1-x) * (x>1/2))}
+    // function h(x){ return hh(hh(x))}
     makeGraph()
 
 

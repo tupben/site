@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Complex Number Graph</title>
+</head>
+<body>
+    
+    <!-- <p>Value of r: <span id="current-r">5</span></p> -->
+    
+    <style>
+        /* Center the canvas element both horizontally and vertically */
+        #canvasContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #complexGraph {
+            background-color: lightgray;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .slider-container {
+            margin-top: 40px;
+            margin-left: 40px;
+            margin-bottom: 20px;
+        }
+        
+        #r-slider {
+            margin-bottom: 40px;
+        }
+
+        #r-value {
+            display: inline-block;
+            /* font-weight: bold; */
+        }
+        .all-sliders {
+            position: fixed;
+            top: 20px;
+            right: 0px;
+            width: 400px;
+            text-align: left;
+        }
+
+    </style>
+
+    <div id="canvasContainer">
+        <canvas id="complexGraph" width="650" height="650" style="background-color: lightgray;"></canvas>
+    </div>
+
+    <div class="all-sliders">
+        <div class="slider-container">
+            <label for="R">R:</label>
+            <input type="range" id="r-slider" min="0" max="5" step="0.1" value="1">
+            <span id="r-value">5</span>
+        </div>
+        <div class="slider-container">
+            <label for="a">a:</label>
+            <input type="range" id="a-slider" min="-10" max="10" step="0.1" value="2">
+            <span id="a-value">2</span>
+        </div>
+        <div class="slider-container">
+            <label for="b">b:</label>
+            <input type="range" id="b-slider" min="-10" max="10" step="0.1" value="0">
+            <span id="b-value">0</span>
+        </div>
+        <div class="slider-container">
+            <label for="c">c:</label>
+            <input type="range" id="c-slider" min="-10" max="10" step="0.1" value="-1">
+            <span id="c-value">-1</span>
+        </div>
+        <div class="slider-container">
+            <label for="d">d:</label>
+            <input type="range" id="d-slider" min="-10" max="10" step="0.1" value="0">
+            <span id="d-value">0</span>
+        </div>
+    </div>
+
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.7.2/math.min.js"></script> -->
+    <script>
+
+        const aaSlider = document.getElementById("a-slider");
+        const aValue = document.getElementById("a-value");
+        let aa = parseFloat(aaSlider.value);
+        aValue.textContent = aa;
+
+        aaSlider.addEventListener("input", function() {
+            aa = parseFloat(aaSlider.value);
+            aValue.textContent = aa;
+            redraw(); // Call a function to update the plot
+        });
+
+        const bbSlider = document.getElementById("b-slider");
+        const bValue = document.getElementById("b-value");
+        let bb = parseFloat(bbSlider.value);
+        bValue.textContent = bb;
+
+        bbSlider.addEventListener("input", function() {
+            bb = parseFloat(bbSlider.value);
+            aValue.textContent = bb;
+            redraw(); // Call a function to update the plot
+        });
+
+        const ccSlider = document.getElementById("c-slider");
+        const cValue = document.getElementById("c-value");
+        let cc = parseFloat(ccSlider.value);
+        cValue.textContent = cc;
+
+        ccSlider.addEventListener("input", function() {
+            cc = parseFloat(ccSlider.value);
+            cValue.textContent = cc;
+            redraw(); // Call a function to update the plot
+        });
+
+        const ddSlider = document.getElementById("d-slider");
+        const dValue = document.getElementById("d-value");
+        let dd = parseFloat(ddSlider.value);
+        dValue.textContent = dd;
+
+        ddSlider.addEventListener("input", function() {
+            dd = parseFloat(ddSlider.value);
+            cValue.textContent = dd;
+            redraw(); // Call a function to update the plot
+        });
+
+        // These are some of my functions
+
+        const points = partitionRangeIntoNParts(11)
+
+
+        function PolarToRectangular(z) {
+            const R = z.magnitude
+            const t = z.angle
+            const a = Math.round(R * Math.cos(t) * 100) / 100 ;
+            const b = Math.round (R * Math.sin(t) * 100 ) / 100;
+            return { real: Math.round(a*100) / 100, imaginary: Math.round(b * 100) / 100 };
+        }
+
+        // console.log("test3")
+        // let test3 = {magnitude:1, angle: Math.PI / 4}
+        // console.log("z = ", test3)
+        // console.log(PolarToRectangular(test3))
+
+        // Example usage:
+        const R = 2; // Replace with your desired value
+        const t = 0.25; // Replace with your desired value
+        const result_1 = PolarToRectangular( {magnitude: R, angle: t} );
+        // console.log(result_1);
+
+        function RectangularToPolar(z) {
+            const a = z.real
+            const b = z.imaginary
+            const R = Math.sqrt(a * a + b * b);
+            const t = Math.atan2(b, a);
+            return { magnitude: R, angle: t };
+        }
+
+        // Example usage:
+        const a = 1; // Replace with your desired value
+        const b = 1; // Replace with your desired value
+        const result_2 = RectangularToPolar( {real:a, imaginary:b} );
+        // console.log(result_2);
+
+        // input: rectangular
+        function evaluateMonomial(z,a,n){
+            // console.log("newzRect")
+            // console.log(z)
+            var z = RectangularToPolar(z)
+            // console.log("newzPolar")
+            // console.log(z)
+            let newMagnitude = Math.pow(z.magnitude, n) * a
+            // console.log("newzMag")
+            // console.log(newMagnitude)
+            let newAngle = (z.angle * n) % (2 * Math.PI)
+            if (newAngle < 0){
+                newAngle += 2 * Math.PI;
+            }
+            // console.log("newAngle")
+            // console.log(newAngle)
+            // console.log("PolarToRectangular")
+            // console.log(PolarToRectangular({magnitude: newMagnitude, angle: newAngle}))
+            return PolarToRectangular({magnitude: newMagnitude, angle: newAngle})
+        }
+
+        // console.log("test monomial")
+        // let test4 = evaluateMonomial({real:0,imaginary: 2},2,3)
+        // console.log("test4")
+        // console.log(test4)
+        // console.log("test monomial")
+
+        // console.log('test01')
+        // const zed1 = {magnitude: 1, angle: (Math.PI / 4)}
+        // console.log(evaluateMonomial(zed1, 1, 0))
+
+        // takes complex number in rectangular form
+        function mapNumber(z, coefficients) {
+            let newReal = 0
+            let newImaginary = 0
+            const l = coefficients.length; 
+            coefficients.forEach((a,i) => {
+                let newRectangular = evaluateMonomial(z, a, l - i - 1)
+                // let newRectangular = PolarToRectangular(newPolar)
+                newReal += newRectangular.real
+                newImaginary += newRectangular.imaginary
+                }
+            )
+            return {real: newReal, imaginary: newImaginary}
+        }
+
+        // const zed2 = {magnitude: 2, angle: (Math.PI / 4)}
+        // const zed2 = {real: 0, imaginary: 1}
+        // console.log("zed2")
+        // console.log(zed2)
+        // console.log(mapNumber(zed2,[1, -2,3]))
+
+
+
+
+        const rSlider = document.getElementById("r-slider");
+        const rValue = document.getElementById("r-value");
+        const currentR = 1;
+
+        // Initialize the value of r
+        let r = parseFloat(rSlider.value);
+        rValue.textContent = r;
+        currentR.textContent = r;
+
+        // Add an event listener to the slider to update the value of r
+        rSlider.addEventListener("input", function() {
+            r = parseFloat(rSlider.value);
+            rValue.textContent = r;
+            currentR.textContent = r;
+            redraw();
+        });
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // Get the canvas element and its context
+        const canvas = document.getElementById("complexGraph");
+        const ctx = canvas.getContext("2d");
+
+        // Define the graph's parameters
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const scale = 20; // Adjust the scale to fit your needs
+
+        // Function to plot a complex number
+        function plotComplexNumber(complexNumber) {
+            const x = complexNumber.real * scale + centerX;
+            const y = -complexNumber.imaginary * scale + centerY;
+            
+            // Draw a point
+            ctx.beginPath();
+            ctx.arc(x, y, 1, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+
+        // Function to draw the real and imaginary axes
+        function drawAxes() {
+            ctx.strokeStyle = "black"; // Set line color to black
+            ctx.lineWidth = 1; // Set line width
+
+            // Draw the real axis (X-axis)
+            ctx.beginPath();
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(canvas.width, centerY);
+            ctx.stroke();
+
+            // Draw the imaginary axis (Y-axis)
+            ctx.beginPath();
+            ctx.moveTo(centerX, 0);
+            ctx.lineTo(centerX, canvas.height);
+            ctx.stroke();
+        }
+
+        function partitionRangeIntoNParts(n) {
+            if (n < 2) {
+                return [0, 1];
+            }
+            
+            const step = 1 / (n - 1);
+            const result = new Array(n).fill().map((_, i) => i * step);
+            
+            return result;
+        }
+
+
+        const partitionedRange = partitionRangeIntoNParts(5000);
+
+
+        // Example: Plot some complex numbers
+        var mappedNumbers = [
+        ];
+
+
+
+        function intervalToCircle(t,radius) {
+            const real = radius * Math.cos(2 * Math.PI * t);
+            const imaginary = radius * Math.sin(2 * Math.PI * t);
+            // console.log(0)
+            // console.log({real,imaginary})
+            return { real, imaginary };
+        }
+
+
+
+        
+        // Draw the axes first
+        
+        ctx.fillStyle = "blue"; // Set the point color
+        function redraw(){
+            
+            for (const value of partitionedRange) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                const complexNumber = intervalToCircle(value, r);
+                const mappedNumber = mapNumber(complexNumber,[aa,bb,cc,dd])
+                mappedNumbers.push(mappedNumber);
+            }
+            for (const complexNumber of mappedNumbers) {
+                plotComplexNumber(complexNumber);
+            }
+            drawAxes();
+            mappedNumbers = [];
+        }
+        redraw()
+    </script>
+</body>
+</html>
