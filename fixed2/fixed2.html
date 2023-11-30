@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Math Expression Calculator</title>
+        <style>
+            body {
+                margin: 0;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+                height: 100vh; /* Set body height to 100% of the viewport height */
+            }
+    
+            canvas {
+                background-color: white; /* Gray background color */
+            }
+    
+            .container {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start; /* Align div with input to the left */
+                height: 100vh;
+            }
+    
+            .sidebar {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+                background-color: white;
+                height: 100%;
+            }
+    
+            /* Add some extra spacing between the sidebar elements */
+            .sidebar label,
+            .sidebar input,
+            .sidebar button {
+                margin-bottom: 10px;
+            }
+    
+            /* Tooltip styles */
+            #tooltip {
+                display: none;
+                position: fixed;
+                background-color: #f9f9f9;
+                border: 1px solid #ccc;
+                padding: 8px;
+                border-radius: 4px;
+                font-size: 14px;
+                pointer-events: none; /* Ensure the tooltip doesn't interfere with mouse events */
+            }
+        </style>
+    </head>
+    <body>
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.1.0/math.min.js"></script>
+    
+        <!-- Create a container for canvas and sidebar -->
+        <div class="container">
+    
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <label for="expressionInput">Enter Expression:</label>
+                <input type="text" id="expressionInput" value="z^3 + 1">
+                <button onclick="saveExpression()">Evaluate</button>
+                <div> Enter an expression to be evaluated on the complex plane. The graph displays the magnitude |f(z) - z|,
+                    the distance from each point to its image. Fixed points are colored black. Greater distances correspond with lighter points.
+                </div>
+            </div>
+    
+            <!-- Canvas -->
+            <canvas id="myCanvas"></canvas>
+    
+            <!-- Tooltip -->
+            <div id="tooltip">X: 0, Y: 0</div>
+            
+        </div>
+
+    <script>
+
+        // Create a canvas element
+        const canvas = document.createElement('canvas');
+
+        // Set the canvas width and height to the window height
+        const canvasSize = window.innerHeight;
+
+        canvas.width = canvasSize;
+        canvas.height = canvasSize;
+
+        // Set the canvas background color
+        canvas.style.backgroundColor = '#ddd';
+
+        // Append the canvas to the body
+        document.body.appendChild(canvas);
+
+        // Get the 2D context of the canvas
+        const ctx = canvas.getContext('2d');
+
+
+
+
+
+
+
+
+        function evaluateComplexExpression(expression, complexVariable) {
+            // Create a scope with 'z' as a complex variable
+            const scope = {z: complexVariable};
+
+            // Evaluate the expression in the given scope
+            const result = math.evaluate(expression, scope);
+
+            // Convert the result to a complex number if it's not already
+            return math.complex(result);
+        }
+
+        // Example:
+        const expression = "z^3+1";
+
+
+        // Find the color of a value
+        function mapValueToColor(value) {
+            // Ensure the input value is within the valid range [0, 1]
+            const clampedValue1 = Math.max(0, Math.min(1, value));
+            const clampedValue2 = clampedValue1 ** .5
+
+            // Map the clamped value to the RGB range [0, 255] for each color component
+            const gray = Math.floor(clampedValue2 * 255);
+
+            // Return the color in RGB format
+            return `rgb(${gray}, ${gray}, ${gray})`;
+            }
+
+
+        // Find the value of a pixel, return its color
+        function checkColor(raw_x, raw_y, canvasSize, exp) {
+            // Adjust x and y values
+            let x = (raw_x - canvasSize/2) / (canvasSize / 4);
+            let y = (raw_y - canvasSize/2) / (canvasSize / 4);
+            
+            let z1 = math.complex(x,y)
+            let z2 = evaluateComplexExpression(exp, z1);
+
+
+            let diff = math.distance([z1.re, z1.im], [z2.re, z2.im])
+            let colorString = mapValueToColor(diff)
+
+            return colorString
+        }
+
+        
+        function drawPixels(exp) {
+        // Iterate over each pixel in the canvas
+        for (let y = 0; y < canvasSize; y += 2) {
+            for (let x = 0; x < canvasSize; x += 2) {
+                ctx.fillStyle = checkColor(x,y,canvasSize,exp);
+                // Draw a red pixel at the current position
+                ctx.fillRect(x, canvasSize - y, 2, 2);
+                }
+            }
+        }
+
+        drawPixels("z^3+1")
+
+
+
+
+        // Set the initial value of the input field
+        document.getElementById('expressionInput').value = "z^3 + 1";
+
+        // Function to save the expression from the input field to a variable
+        function saveExpression() {
+            var userInput = document.getElementById('expressionInput').value;
+            // You can use userInput as needed in your program
+            console.log("User Input:", userInput);
+            drawPixels(userInput)
+            drawGraph()
+        }
+
+        // Add event listener for the "keydown" event on the input field
+        document.getElementById('expressionInput').addEventListener('keydown', function(event) {
+            // Check if the pressed key is Enter (key code 13)
+            if (event.keyCode === 13) {
+                // Trigger the same function as the "Save Expression" button
+                saveExpression();
+            }
+        });
+
+
+
+
+
+
+        /////////////////////
+        /////////////////////
+        /////////////////////
+
+
+
+
+        function drawGraph(){
+        // Draw X-axis
+        ctx.beginPath();
+        ctx.moveTo(0, canvasSize / 2);
+        ctx.lineTo(canvasSize, canvasSize / 2);
+        ctx.stroke();
+
+        // Draw Y-axis
+        ctx.beginPath();
+        ctx.moveTo(canvasSize / 2, 0);
+        ctx.lineTo(canvasSize / 2, canvasSize);
+        ctx.stroke();
+
+        // Draw tick marks on X-axis
+        for (let i = 1; i <= 3; i++) {
+            const tickX = (i / 4) * canvasSize;
+            ctx.beginPath();
+            ctx.moveTo(tickX, canvasSize / 2 - 5);
+            ctx.lineTo(tickX, canvasSize / 2 + 5);
+            ctx.stroke();
+        }
+
+        // Draw tick marks on Y-axis
+        for (let i = 1; i <= 3; i++) {
+            const tickY = (i / 4) * canvasSize;
+            ctx.beginPath();
+            ctx.moveTo(canvasSize / 2 - 5, tickY);
+            ctx.lineTo(canvasSize / 2 + 5, tickY);
+            ctx.stroke();
+        }
+
+        // Add labels to X and Y axes
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "black";
+
+        // Label for the positive part of the real x-axis
+        ctx.fillText("Re", canvasSize - 30, canvasSize / 2 + 20);
+        ctx.fillText("1", 3 * canvasSize / 4 - 5, canvasSize / 2 + 20);
+
+        // Label for the positive part of the imaginary y-axis
+        ctx.fillText("Im", canvasSize / 2 - 30, 30);
+        ctx.fillText("i", canvasSize / 2 - 25, canvasSize / 4 + 5);
+    }
+    drawGraph()
+    
+            // Tooltip functionality
+            const tooltip = document.getElementById('tooltip');
+        // const canvas = document.getElementById('myCanvas');
+        // const ctx = canvas.getContext('2d');
+
+        document.addEventListener('mousemove', function(e) {
+            const rect = canvas.getBoundingClientRect();
+
+            // Calculate x and y values based on the cursor's position relative to the canvas
+            const x = ((e.clientX - rect.left - canvasSize/2) / (canvasSize / 4)).toFixed(2);
+            const y = (-1 * (e.clientY - rect.top - canvasSize/2) / (canvasSize / 4)).toFixed(2);
+
+            // Update tooltip position
+            tooltip.style.left = e.clientX + 'px';
+            tooltip.style.top = e.clientY + 'px';
+
+            // Display complex number format
+            tooltip.textContent = `${x} + ${y}i`;
+
+            // Optional: Get pixel color at the cursor position
+            const pixel = ctx.getImageData(x, y, 1, 1).data;
+            const color = `rgb(${pixel[0]}, ${pixel[1]}, ${pixel[2]})`;
+            console.log('Pixel Color:', color);
+        });
+
+        canvas.addEventListener('mouseover', function() {
+            tooltip.style.display = 'block';
+        });
+
+        canvas.addEventListener('mouseout', function() {
+            tooltip.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
