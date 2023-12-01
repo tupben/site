@@ -46,7 +46,7 @@
                 display: none;
                 position: fixed;
                 background-color: #f9f9f9;
-                border: 1px solid #ccc;
+                /* border: 1px solid #ccc; */
                 padding: 8px;
                 border-radius: 4px;
                 font-size: 14px;
@@ -64,10 +64,12 @@
             <!-- Sidebar -->
             <div class="sidebar">
                 <label for="expressionInput">Enter Expression:</label>
-                <input type="text" id="expressionInput" value="z^3 + 1">
+                <input type="text" id="expressionInput" value="cos(z^5)">
                 <button onclick="saveExpression()">Evaluate</button>
-                <div> Enter an expression to be evaluated on the complex plane. The graph displays the magnitude |f(z) - z|,
-                    the distance from each point to its image. Fixed points are colored black. Greater distances correspond with lighter points.
+                <div> Enter an expression to be evaluated on the complex plane.
+                    <br><br>The graph uses grayscale to represent the magnitude |f(z) - z|,
+                    the distance from each point to its image.
+                    <br><br>Fixed points are black. Lighter shading means the image is farther away.
                 </div>
             </div>
     
@@ -118,7 +120,7 @@
         }
 
         // Example:
-        const expression = "z^3+1";
+        const expression = "cos(z^5)";
 
 
         // Find the color of a value
@@ -163,13 +165,13 @@
             }
         }
 
-        drawPixels("z^3+1")
+        drawPixels("cos(z^5)")
 
 
 
 
         // Set the initial value of the input field
-        document.getElementById('expressionInput').value = "z^3 + 1";
+        document.getElementById('expressionInput').value = "cos(z^5)";
 
         // Function to save the expression from the input field to a variable
         function saveExpression() {
